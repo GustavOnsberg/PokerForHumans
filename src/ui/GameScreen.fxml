@@ -12,7 +12,7 @@
    <children>
       <Pane prefHeight="804.0" prefWidth="1512.0" style="-fx-background-color: gray;" AnchorPane.bottomAnchor="276.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="408.0" AnchorPane.topAnchor="0.0" fx:id="gameCanvas">
          <children>
-            <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Back" fx:id="btnBack"/>
+            <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Leave" fx:id="btnBack" onAction="#handleBackButton"/>
             <Label fx:id="playerName" layoutX="425.0" layoutY="238.0" textFill="WHITE">
                <font>
                   <Font size="26.0" />
