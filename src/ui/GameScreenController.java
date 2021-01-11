@@ -25,6 +25,17 @@ public class GameScreenController implements Initializable {
     public Button btnCall;
     public Button btnRaise;
     public Button btnFold;
+    public int raiseAmount = 0;
+    public Button plusOne;
+    public Button plusTen;
+    public Button plusHundred;
+    public Button plusThousand;
+    public Button minusOne;
+    public Button minusTen;
+    public Button minusHundred;
+    public Button minusThousand;
+    public Button setZero;
+    public Label raiseLabel;
 
     public void handleBackButton(ActionEvent actionEvent) throws IOException {
         Main main = new Main();
@@ -35,22 +46,124 @@ public class GameScreenController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         playerName.setText(NameScreenController.getPlayerNameCon());
-        btnCall.setMinWidth(200);
-        btnCall.setMaxWidth(700);
-        btnRaise.setMinWidth(200);
-        btnRaise.setMaxWidth(700);
-        btnFold.setMinWidth(200);
-        btnFold.setMaxWidth(700);
+        //Set style for main buttons
+        btnCall.setId("game_btn");
+        btnFold.setId("game_btn");
+        btnRaise.setText("Raise: " + raiseAmount);
 
+        //Set style for raise buttons
+        plusOne.setId("raise_btn");
+        plusTen.setId("raise_btn");
+        plusHundred.setId("raise_btn");
+        plusThousand.setId("raise_btn");
+        minusOne.setId("raise_btn");
+        minusTen.setId("raise_btn");
+        minusHundred.setId("raise_btn");
+        minusThousand.setId("raise_btn");
+        setZero.setId("raise_btn");
 
+        //Set raise amount
+        checkZero(raiseAmount);
+        setRaiseLabel(raiseAmount);
     }
 
     public void handleCallButton(ActionEvent actionEvent) {
+        raiseAmount = 0;
+        checkZero(raiseAmount);
+        setRaiseLabel(raiseAmount);
     }
 
     public void handleRaiseButton(ActionEvent actionEvent) {
+        raiseAmount = 0;
+        checkZero(raiseAmount);
+        setRaiseLabel(raiseAmount);
     }
 
     public void handleFoldButton(ActionEvent actionEvent) {
+        raiseAmount = 0;
+        checkZero(raiseAmount);
+        setRaiseLabel(raiseAmount);
+    }
+
+    public void handleSetZero(ActionEvent actionEvent) {
+        raiseAmount = 0;
+        checkZero(raiseAmount);
+        setRaiseLabel(raiseAmount);
+    }
+
+    public void handlePlusOne(ActionEvent actionEvent) {
+        raiseAmount = raiseAmount + 1;
+        checkZero(raiseAmount);
+        setRaiseLabel(raiseAmount);
+    }
+
+    public void handlePlusTen(ActionEvent actionEvent) {
+        raiseAmount = raiseAmount + 10;
+        checkZero(raiseAmount);
+        setRaiseLabel(raiseAmount);
+    }
+
+    public void handlePlusHundred(ActionEvent actionEvent) {
+        raiseAmount = raiseAmount + 100;
+        checkZero(raiseAmount);
+        setRaiseLabel(raiseAmount);
+    }
+
+    public void handleplusThousand(ActionEvent actionEvent) {
+        raiseAmount = raiseAmount + 1000;
+        checkZero(raiseAmount);
+        setRaiseLabel(raiseAmount);
+    }
+
+    public void handleMinusOne(ActionEvent actionEvent) {
+        if (raiseAmount - 1 <= 0) {
+            raiseAmount = 0;
+        } else {
+            raiseAmount = raiseAmount - 10;
+        }
+        checkZero(raiseAmount);
+        setRaiseLabel(raiseAmount);
+    }
+
+    public void handleMinusTen(ActionEvent actionEvent) {
+        if (raiseAmount - 10 <= 0) {
+            raiseAmount = 0;
+        } else {
+            raiseAmount = raiseAmount - 10;
+        }
+        checkZero(raiseAmount);
+        setRaiseLabel(raiseAmount);
+    }
+
+    public void handleMinusHundred(ActionEvent actionEvent) {
+        if (raiseAmount - 100 <= 0) {
+            raiseAmount = 0;
+        } else {
+            raiseAmount = raiseAmount - 100;
+        }
+        checkZero(raiseAmount);
+        setRaiseLabel(raiseAmount);
+    }
+
+    public void handleMinusThousand(ActionEvent actionEvent) {
+        if (raiseAmount - 1000 <= 0) {
+            raiseAmount = 0;
+        } else {
+            raiseAmount = raiseAmount - 1000;
+        }
+        checkZero(raiseAmount);
+        setRaiseLabel(raiseAmount);
+    }
+
+    public void setRaiseLabel(int raiseAmount) {
+        btnRaise.setText("Raise: " + raiseAmount);
+    }
+
+    public void checkZero(int raiseAmount) {
+        if (raiseAmount <= 0) {
+            btnRaise.setId("raise_zero");
+        } else {
+            btnRaise.setId("game_btn");
+        }
     }
 }
