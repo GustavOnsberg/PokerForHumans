@@ -19,7 +19,7 @@ public class StartScreenController {
 
     public void handleStartBtn(ActionEvent actionEvent) throws IOException {
         Main main = new Main();
-        main.setStage("/ui/GameScreen.fxml",Main.pStage);
+        main.setStage("/ui/NameScreen.fxml",Main.pStage);
 
     }
 

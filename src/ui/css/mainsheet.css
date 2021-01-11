@@ -1,0 +1,24 @@
+/*
+Set Fonts
+*/
+
+.label {
+    -fx-font-family: 'Nunito', sans-serif;
+    -fx-effect: dropshadow(three-pass-box, black, 10, 0, 0, 0);
+    -fx-background-insets: 2;
+}
+
+.button {
+    -fx-font-family: 'Nunito', sans-serif;
+}
+
+/*
+Set textfield CSS
+*/
+
+.text-field {
+    -fx-background-color: -fx-text-box-border, -fx-background;
+    -fx-background-insets: 0, 0 0 4 0;
+    -fx-background-radius: 0;
+}
+

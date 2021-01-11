@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.GameScreenController">
-   <left>
-      <Button mnemonicParsing="false" text="Back" fx:id="btnBack" onAction="#handleBackButton"/>
-   </left>
-</BorderPane>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.GameScreenController">
+   <children>
+      <Pane prefHeight="804.0" prefWidth="1512.0" style="-fx-background-color: gray;" AnchorPane.bottomAnchor="276.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="408.0" AnchorPane.topAnchor="0.0" fx:id="gameCanvas">
+         <children>
+            <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Back" fx:id="btnBack"/>
+            <Label fx:id="playerName" layoutX="425.0" layoutY="238.0" textFill="WHITE">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <HBox layoutY="804.0" prefHeight="277.0" prefWidth="1512.0" style="-fx-background-color: blue;" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="408.0" AnchorPane.topAnchor="804.0" fx:id="gameBtns"/>
+      <VBox layoutX="1511.0" layoutY="174.0" prefHeight="907.0" prefWidth="409.0" style="-fx-background-color: green;" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="1511.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="174.0" fx:id="chatWindow"/>
+      <Pane layoutX="1512.0" prefHeight="173.0" prefWidth="409.0" style="-fx-background-color: red;" AnchorPane.bottomAnchor="907.0" AnchorPane.leftAnchor="1512.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0" fx:id="moneyWindow"/>
+   </children>
+</AnchorPane>

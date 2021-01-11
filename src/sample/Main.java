@@ -14,6 +14,7 @@ import java.io.IOException;
 public class Main extends Application {
     public static Stage pStage;
     public static String cssBtn = "/ui/css/btn.css";
+    public static String cssMain = "/ui/css/mainsheet.css";
 
 
     @Override
@@ -22,6 +23,7 @@ public class Main extends Application {
         primaryStage.setTitle("Poker For Humans");
         primaryStage.setScene(new Scene(root));
         root.getStylesheets().add(cssBtn);
+        root.getStylesheets().add(cssMain);
         primaryStage.setMaximized(true);
         pStage = primaryStage;
         primaryStage.show();
@@ -35,6 +37,7 @@ public class Main extends Application {
         //Debug scene size
         System.out.println("Height " + oldScene.getHeight() + " Width " + oldScene.getWidth());
         root.getStylesheets().add(cssBtn);
+        root.getStylesheets().add(cssMain);
         primaryStage.show();
     }
 
