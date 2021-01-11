@@ -53,4 +53,7 @@ public class GameScreenController implements Initializable {
 
     public void handleFoldButton(ActionEvent actionEvent) {
     }
+    public Pane getPane(Pane name){
+        return name;
+    }
 }
