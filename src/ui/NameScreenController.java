@@ -14,7 +14,7 @@ public class NameScreenController {
     public Button confirmName;
     public Label errorMsg;
     public int count = 0;
-    public String playerNameCon;
+    public static String playerNameCon;
 
     public void handleConfirmNameButton(ActionEvent actionEvent) throws IOException {
         //Get name
@@ -44,7 +44,12 @@ public class NameScreenController {
             }
         } else {
             Main main = new Main();
+            System.out.println(playerNameCon);
             main.setStage("/ui/GameScreen.fxml",Main.pStage);
         }
+    }
+
+    public static String getPlayerNameCon() {
+        return playerNameCon;
     }
 }
