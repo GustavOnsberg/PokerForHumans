@@ -7,16 +7,17 @@ import java.io.IOException;
 
 public class Client {
 
-    static Client client;
-
     RemoteSpace ssLobby;
     RemoteSpace ssPrivate;
 
 
 
     public static void main(String[] argv) throws IOException, InterruptedException {
-        client = new Client();
-        client.connectToServer("localhost:33333");
+        Client client = new Client("localhost:33333");
+    }
+
+    Client(String gate) throws IOException, InterruptedException {
+        connectToServer(gate);
     }
 
 
