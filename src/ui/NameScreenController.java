@@ -20,8 +20,9 @@ public class NameScreenController {
         //Get name
         playerNameCon = playerNameField.getText();
         confirmName.setDefaultButton(true);
-        if (playerNameField.getText().isEmpty()) {
-            errorMsg.setText("Please enter a name");
+        if (playerNameField.getText().length() > 40 || playerNameField.getText().isEmpty()) {
+            errorMsg.setText("Names must be between 1 and 40 characters");
+            errorMsg.setWrapText(true);
             confirmName.setOnMouseClicked(event -> {
                 count++;
                 System.out.println(count);
@@ -45,7 +46,7 @@ public class NameScreenController {
         } else {
             Main main = new Main();
             System.out.println(playerNameCon);
-            main.setStage("/ui/GameScreen.fxml",Main.pStage);
+            main.setStage("/ui/GameScreen.fxml", Main.pStage);
         }
     }
 

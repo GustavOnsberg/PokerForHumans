@@ -1,13 +1,10 @@
 package ui;
 
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import sample.Main;
 
@@ -35,7 +32,7 @@ public class GameScreenController implements Initializable {
     public Button minusHundred;
     public Button minusThousand;
     public Button setZero;
-    public Label raiseLabel;
+    public ScrollPane chatWindowPane;
 
     public void handleBackButton(ActionEvent actionEvent) throws IOException {
         Main main = new Main();
@@ -64,55 +61,48 @@ public class GameScreenController implements Initializable {
 
         //Set raise amount
         checkZero(raiseAmount);
-        setRaiseLabel(raiseAmount);
+
+
     }
 
     public void handleCallButton(ActionEvent actionEvent) {
         raiseAmount = 0;
         checkZero(raiseAmount);
-        setRaiseLabel(raiseAmount);
     }
 
     public void handleRaiseButton(ActionEvent actionEvent) {
         raiseAmount = 0;
         checkZero(raiseAmount);
-        setRaiseLabel(raiseAmount);
     }
 
     public void handleFoldButton(ActionEvent actionEvent) {
         raiseAmount = 0;
         checkZero(raiseAmount);
-        setRaiseLabel(raiseAmount);
     }
 
     public void handleSetZero(ActionEvent actionEvent) {
         raiseAmount = 0;
         checkZero(raiseAmount);
-        setRaiseLabel(raiseAmount);
     }
 
     public void handlePlusOne(ActionEvent actionEvent) {
         raiseAmount = raiseAmount + 1;
         checkZero(raiseAmount);
-        setRaiseLabel(raiseAmount);
     }
 
     public void handlePlusTen(ActionEvent actionEvent) {
         raiseAmount = raiseAmount + 10;
         checkZero(raiseAmount);
-        setRaiseLabel(raiseAmount);
     }
 
     public void handlePlusHundred(ActionEvent actionEvent) {
         raiseAmount = raiseAmount + 100;
         checkZero(raiseAmount);
-        setRaiseLabel(raiseAmount);
     }
 
     public void handleplusThousand(ActionEvent actionEvent) {
         raiseAmount = raiseAmount + 1000;
         checkZero(raiseAmount);
-        setRaiseLabel(raiseAmount);
     }
 
     public void handleMinusOne(ActionEvent actionEvent) {
@@ -122,7 +112,6 @@ public class GameScreenController implements Initializable {
             raiseAmount = raiseAmount - 10;
         }
         checkZero(raiseAmount);
-        setRaiseLabel(raiseAmount);
     }
 
     public void handleMinusTen(ActionEvent actionEvent) {
@@ -132,7 +121,6 @@ public class GameScreenController implements Initializable {
             raiseAmount = raiseAmount - 10;
         }
         checkZero(raiseAmount);
-        setRaiseLabel(raiseAmount);
     }
 
     public void handleMinusHundred(ActionEvent actionEvent) {
@@ -142,7 +130,6 @@ public class GameScreenController implements Initializable {
             raiseAmount = raiseAmount - 100;
         }
         checkZero(raiseAmount);
-        setRaiseLabel(raiseAmount);
     }
 
     public void handleMinusThousand(ActionEvent actionEvent) {
@@ -152,14 +139,10 @@ public class GameScreenController implements Initializable {
             raiseAmount = raiseAmount - 1000;
         }
         checkZero(raiseAmount);
-        setRaiseLabel(raiseAmount);
-    }
-
-    public void setRaiseLabel(int raiseAmount) {
-        btnRaise.setText("Raise: " + raiseAmount);
     }
 
     public void checkZero(int raiseAmount) {
+        btnRaise.setText("Raise: " + raiseAmount);
         if (raiseAmount <= 0) {
             btnRaise.setId("raise_zero");
         } else {
