@@ -114,15 +114,18 @@ class Waiter implements Runnable{
                 Object[] tuple = serverRep.get(player.room).get(new FormalField(String.class),new FormalField(String.class));
                 if (tuple[0].equals("action") && player.state == 4){
                     if (tuple[1].equals("fold")){
+                        System.out.println("Waiter ("+player.room+")> Player has folded");
                         player.state = 0;
                     }
                     else if(tuple[1].equals("call")){
                         if(player.bank + player.bet >= server.requiredBet){
+                            System.out.println("Waiter ("+player.room+")> Player has called/checked");
                             player.bank -= server.requiredBet - player.bet;
                             player.bet = server.requiredBet;
                             player.state = 2;
                         }
                         else{
+                            System.out.println("Waiter ("+player.room+")> Player is all in");
                             player.bet += player.bank;
                             player.bank = 0;
                             player.state = 3;
@@ -130,12 +133,14 @@ class Waiter implements Runnable{
                     }
                     else if(tuple[1].equals("raise")){
                         if((int)tuple[2] + server.requiredBet <= player.bet + player.bank){
+                            System.out.println("Waiter ("+player.room+")> Player has raisen by "+(int)tuple[2]);
                             player.bank -= (int)tuple[2] + server.requiredBet - player.bet;
                             player.bet = (int)tuple[2] + server.requiredBet;
                             server.requiredBet += (int)tuple[2];
                             player.state = 2;
                         }
                         else{
+                            System.out.println("Waiter ("+player.room+")> Player is all in");
                             player.bet += player.bank;
                             player.bank = 0;
                             player.state = 3;
