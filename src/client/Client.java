@@ -44,6 +44,14 @@ public class Client {
         ssPrivate.put("action", action, value);
         System.out.println("Client> Sending action: " + action + " " + value);
     }
+
+
+
+
+
+    public Player getPlayerMe() {
+        return playerMe;
+    }
 }
 
 
