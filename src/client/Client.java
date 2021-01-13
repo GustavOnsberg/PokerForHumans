@@ -48,10 +48,10 @@ public class Client {
 
 
 class Player {
-    int bank;
-    String name;
-    int[] cards;
-    int bet;
+    public int bank;
+    public String name;
+    public int[] cards;
+    public int bet;
 
     /*
     -1 = out
@@ -62,13 +62,13 @@ class Player {
     4 = players turn
 
     * */
-    int state;
+    public int state;
 
 
 
-    boolean isDealer;
-    boolean isSmallBlind;
-    boolean isBigBlind;
+    public boolean isDealer;
+    public boolean isSmallBlind;
+    public boolean isBigBlind;
 
     Player(String name){
         bank = 0;
