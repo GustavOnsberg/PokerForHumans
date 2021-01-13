@@ -6,9 +6,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import javax.swing.event.ChangeListener;
-import java.io.File;
 import java.io.IOException;
 
 
@@ -16,7 +13,7 @@ public class Main extends Application {
     public static Stage pStage;
     public static String cssBtn = "/ui/css/btn.css";
     public static String cssMain = "/ui/css/mainsheet.css";
-    public Client client;
+    public static Client client;
 
 
     @Override
@@ -30,7 +27,6 @@ public class Main extends Application {
         primaryStage.setMaximized(true);
         pStage = primaryStage;
         primaryStage.show();
-
     }
 
     public void setStage(String fxmlName, Stage primaryStage) throws IOException {

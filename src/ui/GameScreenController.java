@@ -65,19 +65,22 @@ public class GameScreenController implements Initializable {
 
     }
 
-    public void handleCallButton(ActionEvent actionEvent) {
+    public void handleCallButton(ActionEvent actionEvent) throws InterruptedException {
+        raiseAmount = 0;
+        checkZero(raiseAmount);
+        Main.client.sendAction("call",0);
+    }
+
+    public void handleRaiseButton(ActionEvent actionEvent) throws InterruptedException {
+        Main.client.sendAction("raise",raiseAmount);
         raiseAmount = 0;
         checkZero(raiseAmount);
     }
 
-    public void handleRaiseButton(ActionEvent actionEvent) {
+    public void handleFoldButton(ActionEvent actionEvent) throws InterruptedException {
         raiseAmount = 0;
         checkZero(raiseAmount);
-    }
-
-    public void handleFoldButton(ActionEvent actionEvent) {
-        raiseAmount = 0;
-        checkZero(raiseAmount);
+        Main.client.sendAction("fold",0);
     }
 
     public void handleSetZero(ActionEvent actionEvent) {
