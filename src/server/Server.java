@@ -35,6 +35,17 @@ public class Server {
 
 
     public int getNextPlayer(){
+        int lastTurn = turn;
+        int currentTurnCheck = turn + 1;
+
+        for (int i = 0; i < players.size(); i++){
+            if (currentTurnCheck >= players.size())
+                currentTurnCheck = 0;
+            if ((players.get(currentTurnCheck).state == 1 || players.get(currentTurnCheck).state == 2) && currentTurnCheck == lastTurn){
+                return currentTurnCheck;
+            }
+        }
+
         return -1;
     }
 }
