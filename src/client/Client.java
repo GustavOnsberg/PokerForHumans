@@ -48,21 +48,42 @@ public class Client {
 
 
 class Player {
-    public int bank;
-    public String name;
-    public int[] cards;
-    public int bet;
+    public int getBank() {
+        return bank;
+    }
+
+
+    int bank;
+
+    public String getName() {
+        return name;
+    }
+
+
+    String name;
+
+    int[] cards;
+
+    public int getBet() {
+        return bet;
+    }
+
+    int bet;
+
+    public void setState(int state) {
+        this.state = state;
+    }
 
     /*
-    -1 = out
-    0 = folded
-    1 = yet to bet
-    2 = in the game
-    3 = all in
-    4 = players turn
+        -1 = out
+        0 = folded
+        1 = yet to bet
+        2 = in the game
+        3 = all in
+        4 = players turn
 
-    * */
-    public int state;
+        * */
+    int state;
 
 
 
@@ -78,4 +99,11 @@ class Player {
 
         state = 4;
     }
+
+
+
+    public int[] getCards() {
+        return cards;
+    }
+
 }
