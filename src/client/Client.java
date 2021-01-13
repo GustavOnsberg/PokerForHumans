@@ -12,8 +12,8 @@ public class Client {
     RemoteSpace ssLobby;
     RemoteSpace ssPrivate;
 
-    public Player playerMe;
-    public ArrayList<Player> players;
+    public static Player playerMe;
+    public static ArrayList<Player> players;
 
 
 
