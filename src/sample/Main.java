@@ -1,13 +1,11 @@
 package sample;
 
+import client.Client;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import javax.swing.event.ChangeListener;
-import java.io.File;
 import java.io.IOException;
 
 
@@ -15,10 +13,12 @@ public class Main extends Application {
     public static Stage pStage;
     public static String cssBtn = "/ui/css/btn.css";
     public static String cssMain = "/ui/css/mainsheet.css";
+    public static Client client;
 
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+
         Parent root = FXMLLoader.load(getClass().getResource("/ui/StartScreen.fxml"));
         primaryStage.setTitle("Poker For Humans");
         primaryStage.setScene(new Scene(root));
@@ -27,7 +27,6 @@ public class Main extends Application {
         primaryStage.setMaximized(true);
         pStage = primaryStage;
         primaryStage.show();
-
     }
 
     public void setStage(String fxmlName, Stage primaryStage) throws IOException {
