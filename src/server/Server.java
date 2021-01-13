@@ -32,6 +32,11 @@ public class Server {
 
         new Thread(new Butler(serverRep, this)).start();
     }
+
+
+    public int getNextPlayer(){
+        return -1;
+    }
 }
 
 class Player {
@@ -65,7 +70,7 @@ class Player {
         cards = new int[]{-1, -1};
         bet = 0;
 
-        state = 0;
+        state = 4;
     }
 }
 
@@ -111,7 +116,7 @@ class Waiter implements Runnable{
     public void run() {
         while(true){
             try {
-                Object[] tuple = serverRep.get(player.room).get(new FormalField(String.class),new FormalField(String.class));
+                Object[] tuple = serverRep.get(player.room).get(new FormalField(String.class),new FormalField(String.class),new FormalField(Integer.class));
                 if (tuple[0].equals("action") && player.state == 4){
                     if (tuple[1].equals("fold")){
                         System.out.println("Waiter ("+player.room+")> Player has folded");
@@ -133,7 +138,7 @@ class Waiter implements Runnable{
                     }
                     else if(tuple[1].equals("raise")){
                         if((int)tuple[2] + server.requiredBet <= player.bet + player.bank){
-                            System.out.println("Waiter ("+player.room+")> Player has raisen by "+(int)tuple[2]);
+                            System.out.println("Waiter ("+player.room+")> Player has risen by "+(int)tuple[2]);
                             player.bank -= (int)tuple[2] + server.requiredBet - player.bet;
                             player.bet = (int)tuple[2] + server.requiredBet;
                             server.requiredBet += (int)tuple[2];

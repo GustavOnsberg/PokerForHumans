@@ -1,6 +1,8 @@
 package client;
 
 import org.jspace.RemoteSpace;
+
+import java.util.ArrayList;
 import java.util.UUID;
 
 import java.io.IOException;
@@ -10,6 +12,9 @@ public class Client {
     RemoteSpace ssLobby;
     RemoteSpace ssPrivate;
 
+    Player playerMe;
+    ArrayList<Player> players;
+
 
 
     public static void main(String[] argv) throws IOException, InterruptedException {
@@ -18,23 +23,59 @@ public class Client {
 
     public Client(String gate) throws IOException, InterruptedException {
         connectToServer(gate);
+        playerMe = new Player("Name");
+        players = new ArrayList<Player>();
     }
 
 
     public void connectToServer(String gate) throws IOException, InterruptedException {
-        System.out.println("Trying to connect to "+gate);
+        System.out.println("Client> Trying to connect to "+gate);
         ssLobby = new RemoteSpace("tcp://"+gate+"/lobby?keep");
-        System.out.println("Connected to "+gate);
-        System.out.println("Requesting private room");
+        System.out.println("Client> Connected to "+gate);
+        System.out.println("Client> Requesting private room");
         String prid = UUID.randomUUID().toString();
         ssLobby.put("privateSpaceRequest", prid);
-        System.out.println("Trying to access private room");
+        System.out.println("Client> Trying to access private room");
         ssPrivate = new RemoteSpace("tcp://"+gate+"/pr_"+prid+"?keep");
-        System.out.println("Now in private room pr_" + prid);
+        System.out.println("Client> Now in private room pr_" + prid);
     }
 
     public void sendAction(String action, int value) throws InterruptedException {
-        System.out.println("Sending action: " + action + " " + value);
         ssPrivate.put("action", action, value);
+        System.out.println("Client> Sending action: " + action + " " + value);
+    }
+}
+
+
+class Player {
+    int bank;
+    String name;
+    int[] cards;
+    int bet;
+
+    /*
+    -1 = out
+    0 = folded
+    1 = yet to bet
+    2 = in the game
+    3 = all in
+    4 = players turn
+
+    * */
+    int state;
+
+
+
+    boolean isDealer;
+    boolean isSmallBlind;
+    boolean isBigBlind;
+
+    Player(String name){
+        bank = 0;
+        this.name = name;
+        cards = new int[]{-1, -1};
+        bet = 0;
+
+        state = 4;
     }
 }
