@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.StartScreenController">
-   <left>
-      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" fx:id="vBoxStart" spacing="20" alignment="TOP_CENTER">
-         <children>
-            <Button fx:id="btnStart" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleStartBtn" prefHeight="33.0" prefWidth="82.0" text="Start">
-            </Button>
-            <Button fx:id="btnQuit" layoutX="14.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleQuitBtn" prefHeight="33.0" prefWidth="82.0" text="Quit">
-            </Button>
-         </children>
-      </VBox>
-   </left>
-</BorderPane>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #2a4b8b;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.StartScreenController">
+   <children>
+      <Button fx:id="btnStart" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleStartBtn" prefHeight="33.0" prefWidth="151.0" text="Start Game" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="15.0">
+      </Button>
+      <Button fx:id="btnServer" layoutX="14.0" layoutY="79.0" mnemonicParsing="false" onAction="#handleServerBtn" prefHeight="33.0" prefWidth="151.0" text="Make Server" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="79.0" />
+      <Button fx:id="btnQuit" layoutX="14.0" layoutY="144.0" mnemonicParsing="false" onAction="#handleQuitBtn" prefHeight="33.0" prefWidth="151.0" text="Quit" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="150.0">
+      </Button>
+   </children>
+</AnchorPane>

@@ -20,8 +20,23 @@
                   <Font size="20.0" />
                </font>
             </TextField>
-            <Button fx:id="confirmName" layoutX="370.0" layoutY="195.0" mnemonicParsing="false" onAction="#handleConfirmNameButton" prefHeight="25.0" prefWidth="181.0" text="Confirm name" AnchorPane.leftAnchor="370.0" AnchorPane.rightAnchor="421.0" AnchorPane.topAnchor="195.0" />
-            <Label fx:id="errorMsg" alignment="CENTER" contentDisplay="TOP" layoutX="274.0" layoutY="265.0" prefHeight="65.0" prefWidth="372.0" textFill="WHITE" AnchorPane.leftAnchor="274.0" AnchorPane.topAnchor="265.0">
+            <Button fx:id="confirmName" layoutX="371.0" layoutY="506.0" mnemonicParsing="false" onAction="#handleConfirmNameButton" prefHeight="25.0" prefWidth="181.0" text="Confirm" AnchorPane.leftAnchor="371.0" AnchorPane.rightAnchor="420.0" AnchorPane.topAnchor="506.0" />
+            <Label fx:id="errorMsg1" alignment="CENTER" contentDisplay="TOP" layoutX="275.0" layoutY="166.0" prefHeight="65.0" prefWidth="372.0" textFill="WHITE" AnchorPane.leftAnchor="275.0" AnchorPane.topAnchor="166.0">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" contentDisplay="TOP" layoutX="321.0" layoutY="272.0" text="What is the IP?" textFill="WHITE" AnchorPane.leftAnchor="321.0" AnchorPane.rightAnchor="371.0" AnchorPane.topAnchor="272.0">
+               <font>
+                  <Font name="System Bold" size="40.0" />
+               </font>
+            </Label>
+            <TextField fx:id="serverIPField" layoutX="274.0" layoutY="357.0" prefHeight="25.0" prefWidth="372.0" promptText="Enter the IP" AnchorPane.leftAnchor="274.0" AnchorPane.rightAnchor="326.0" AnchorPane.topAnchor="357.0">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </TextField>
+            <Label fx:id="errorMsg2" alignment="CENTER" contentDisplay="TOP" layoutX="274.0" layoutY="418.0" prefHeight="65.0" prefWidth="372.0" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="20.0" />
                </font>

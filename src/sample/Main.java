@@ -1,5 +1,6 @@
 package sample;
 
+import client.Client;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,10 +16,12 @@ public class Main extends Application {
     public static Stage pStage;
     public static String cssBtn = "/ui/css/btn.css";
     public static String cssMain = "/ui/css/mainsheet.css";
+    public Client client;
 
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+
         Parent root = FXMLLoader.load(getClass().getResource("/ui/StartScreen.fxml"));
         primaryStage.setTitle("Poker For Humans");
         primaryStage.setScene(new Scene(root));

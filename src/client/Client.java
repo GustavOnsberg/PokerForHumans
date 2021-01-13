@@ -16,7 +16,7 @@ public class Client {
         Client client = new Client("localhost:33333");
     }
 
-    Client(String gate) throws IOException, InterruptedException {
+    public Client(String gate) throws IOException, InterruptedException {
         connectToServer(gate);
     }
 
