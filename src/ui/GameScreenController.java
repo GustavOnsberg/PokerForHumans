@@ -42,7 +42,7 @@ public class GameScreenController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        playerName.setText(NameScreenController.getPlayerNameCon());
+        playerName.setText(NameScreenController.getPlayerName());
         //Set style for main buttons
         btnCall.setId("game_btn");
         btnFold.setId("game_btn");
@@ -61,7 +61,6 @@ public class GameScreenController implements Initializable {
 
         //Set raise amount
         checkZero(raiseAmount);
-
 
     }
 

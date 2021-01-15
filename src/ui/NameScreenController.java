@@ -13,13 +13,13 @@ public class NameScreenController {
     public Button confirmName;
     public Label errorMsg1;
     public int count = 0;
-    public static String playerNameCon;
+    public static String playerName;
     public TextField serverIPField;
     public Label errorMsg2;
 
     public void handleConfirmNameButton(ActionEvent actionEvent) {
         //Get name
-        playerNameCon = playerNameField.getText();
+        playerName = playerNameField.getText();
         confirmName.setDefaultButton(true);
 
         if (playerNameField.getText().length() > 40 || playerNameField.getText().isEmpty()) {
@@ -33,7 +33,7 @@ public class NameScreenController {
             Main main = new Main();
             try {
                 main.client = new Client(serverIPField.getText());
-                System.out.println(playerNameCon);
+                System.out.println(playerName);
                 main.setStage("/ui/GameScreen.fxml", Main.pStage);
             } catch (Exception InterruptedException) {
                 errorMsg2.setText("This IP is not valid");
@@ -64,7 +64,7 @@ public class NameScreenController {
         }
     }
 
-    public static String getPlayerNameCon() {
-        return playerNameCon;
+    public static String getPlayerName() {
+        return playerName;
     }
 }
