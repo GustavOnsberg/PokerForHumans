@@ -30,7 +30,7 @@ public class Server {
 
         serverRep.addGate("tcp://localhost:33333/?keep");
 
-        new Thread(new Butler(serverRep, this)).start();
+        //new Thread(new Butler(serverRep, this)).start();
     }
 
 
@@ -110,7 +110,7 @@ class GameHandler implements Runnable{
         }
     }
 }
-
+/*
 class Waiter implements Runnable{
     SpaceRepository serverRep;
     Player player;
@@ -169,7 +169,8 @@ class Waiter implements Runnable{
         }
     }
 }
-
+*/
+/*
 class Butler implements Runnable{
     SpaceRepository serverRep;
     Server server;
@@ -199,3 +200,4 @@ class Butler implements Runnable{
 }
 
 
+*/
