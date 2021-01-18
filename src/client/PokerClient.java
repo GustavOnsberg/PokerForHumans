@@ -55,3 +55,51 @@ public class PokerClient {
         System.out.println("Client> Sending action: " + action + " " + value);
     }
 }
+
+
+class ClientPlayer{
+    String uid;
+    String name;
+
+    int bank;
+    ArrayList<ClientCard> cards = new ArrayList<>();
+    int bet;
+
+    int score;
+
+    /*
+    -1 = out
+    0 = folded
+    1 = yet to bet
+    2 = in the game
+    3 = all in
+    4 = players turn
+
+    * */
+    int state;
+
+
+
+    boolean isDealer;
+    boolean isSmallBlind;
+    boolean isBigBlind;
+
+    ClientPlayer(String uid){
+        this.uid = uid;
+    }
+}
+
+class ClientCard{
+    int id;
+    int suit;
+    int rank;
+    ClientCard(int id){
+        this.id = id;
+        suit = id % 4;
+        rank = id % 13;
+    }
+}
+
+
+
+
