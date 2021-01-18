@@ -14,8 +14,8 @@ public class PokerClient {
     RemoteSpace ssLobby;
     RemoteSpace ssGame;
 
-    Player playerMe;
-    ArrayList<Player> players;
+    ClientPlayer playerMe;
+    ArrayList<ClientPlayer> players;
     public int total_players = 3;
     static String uid = UUID.randomUUID().toString();
 
