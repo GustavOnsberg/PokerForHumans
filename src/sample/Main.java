@@ -1,6 +1,7 @@
 package sample;
 
 import client.Client;
+import client.PokerClient;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,7 +14,7 @@ public class Main extends Application {
     public static Stage pStage;
     public static String cssBtn = "/ui/css/btn.css";
     public static String cssMain = "/ui/css/mainsheet.css";
-    public static Client client;
+    public static PokerClient client;
 
 
     @Override
