@@ -16,6 +16,8 @@ public class NameScreenController {
     public static String playerName;
     public TextField serverIPField;
     public Label errorMsg2;
+    public TextField tableIDField;
+    public Label errorMsg3;
 
     public void handleConfirmNameButton(ActionEvent actionEvent) {
         //Get name
