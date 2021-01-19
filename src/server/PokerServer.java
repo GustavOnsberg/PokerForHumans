@@ -103,7 +103,7 @@ class Waiter implements Runnable{
         while(true){
 
             boolean turnNotDetermined = true;
-            while(turnNotDetermined){
+            while(turnNotDetermined && gameIsInProgress){
                 if(players.get(turn).state != 4){
                     turn = getNextPlayer();
                 }
@@ -312,8 +312,7 @@ class ServerPlayer{
     2 = in the game
     3 = all in
     4 = players turn
-
-    * */
+    */
     int state;
 
 
