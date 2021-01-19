@@ -7,7 +7,7 @@ class ServerCard {
 
     ServerCard(int id) {
         this.id = id;
-        suit = id % 4;
+        suit = id / 13;
         rank = id % 13;
     }
 }
