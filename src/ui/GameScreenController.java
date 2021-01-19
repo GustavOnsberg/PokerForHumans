@@ -110,11 +110,13 @@ public class GameScreenController implements Initializable {
             cards.add(placeHolderImageView);
         }
 
+        //Add player name labels
         for (int i = 0; i < playerImages.size(); i++) {
             Label playerName = new Label();
             playerName.setWrapText(true);
             playerName.setMaxHeight(80);
             playerName.setMaxWidth(100);
+            playerName.setText(NameScreenController.getPlayerName());
             playerNames.add(playerName);
         }
 
@@ -149,6 +151,9 @@ public class GameScreenController implements Initializable {
             posX = playerImages.get(i).getX();
             posY = playerImages.get(i).getY();
             playerNames.get(i).setVisible(i >= Main.client.total_players);
+            playerNames.get(i).setLayoutX(posX);
+            playerNames.get(i).setLayoutY(posY + 100);
+
         }
     }
 
