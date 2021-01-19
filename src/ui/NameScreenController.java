@@ -35,7 +35,6 @@ public class NameScreenController {
             Main main = new Main();
             try {
                 main.client = new PokerClient(serverIPField.getText(), tableIDField.getText());
-                System.out.println(playerName);
                 main.setStage("/ui/GameScreen.fxml", Main.pStage);
             } catch (Exception InterruptedException) {
                 errorMsg2.setText("This IP is not valid");

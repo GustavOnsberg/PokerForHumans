@@ -35,7 +35,7 @@ public class Main extends Application {
         Scene oldScene = primaryStage.getScene();
         primaryStage.setScene(new Scene(root, oldScene.getWidth(),oldScene.getHeight()));
         //Debug scene size
-        System.out.println("Height " + oldScene.getHeight() + " Width " + oldScene.getWidth());
+//        System.out.println("Height " + oldScene.getHeight() + " Width " + oldScene.getWidth());
         root.getStylesheets().add(cssBtn);
         root.getStylesheets().add(cssMain);
         primaryStage.show();

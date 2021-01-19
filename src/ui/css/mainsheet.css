@@ -31,3 +31,25 @@ Set raise label CSS
     -fx-text-fill: white;
 }
 
+/*
+Set name label text
+*/
+
+#player_name_label {
+    -fx-font-size: 30px;
+    -fx-text-fill: white;
+    -fx-font-weight: bolder;
+}
+
+/*
+Set server window label
+*/
+
+#server_window_label {
+    -fx-effect: dropshadow(three-pass-box, black, 0, 0, 0, 0);
+    -fx-background-insets: 0;
+    -fx-font-size: 30px;
+    -fx-text-fill: black;
+    -fx-font-weight: bolder;
+}
+
