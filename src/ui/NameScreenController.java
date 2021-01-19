@@ -1,6 +1,6 @@
 package ui;
 
-import client.Client;
+import client.PokerClient;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -34,11 +34,12 @@ public class NameScreenController {
         } else {
             Main main = new Main();
             try {
-                main.client = new Client(serverIPField.getText());
+                main.client = new PokerClient(serverIPField.getText(), tableIDField.getText());
                 System.out.println(playerName);
                 main.setStage("/ui/GameScreen.fxml", Main.pStage);
             } catch (Exception InterruptedException) {
                 errorMsg2.setText("This IP is not valid");
+                System.out.println(InterruptedException);
             }
         }
     }

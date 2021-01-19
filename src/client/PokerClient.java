@@ -16,7 +16,7 @@ public class PokerClient {
 
     ClientPlayer playerMe;
     ArrayList<ClientPlayer> players;
-    public int total_players = 3;
+    public int total_players = 8;
     static String uid = UUID.randomUUID().toString();
 
 

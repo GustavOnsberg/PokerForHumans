@@ -1,5 +1,6 @@
 package ui;
 
+import client.PokerClient;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -17,10 +18,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import org.jspace.SpaceRepository;
+import org.jspace.Tuple;
 import sample.Main;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -45,20 +51,25 @@ public class GameScreenController implements Initializable {
     public Button setZero;
     public ScrollPane chatWindowPane;
     public AnchorPane gameCanvas;
-    public int[] players = new int[7];
     public int playerMoney;
     public int smallBlind;
     public int bigBlind;
 
+    public ArrayList<ImageView> playerImages = new ArrayList<ImageView>();
+    public ArrayList<ImageView> cards = new ArrayList<ImageView>();
+    public ArrayList<Label> playerNames = new ArrayList<Label>();
+
+
     public void handleBackButton(ActionEvent actionEvent) throws IOException {
         Main main = new Main();
-        main.setStage("/ui/StartScreen.fxml",Main.pStage);
+        main.setStage("/ui/StartScreen.fxml", Main.pStage);
     }
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeGameConfig();
+
         playerName.setText(NameScreenController.getPlayerName());
         //Set style for main buttons
         btnCall.setId("game_btn");
@@ -80,32 +91,146 @@ public class GameScreenController implements Initializable {
         checkZero(raiseAmount);
 
         //Add imageview to players
-        Image playerImage = new Image(getClass().getResourceAsStream("img/MyAvatar.png"));
-        addPlayerToTable(NameScreenController.getPlayerName(),playerImage);
-        ImageView image = new ImageView(playerImage);
-        image.setFitHeight(100);
-        image.setFitWidth(100);
-        gameCanvas.getChildren().add(image);
+        for (int i = 0; i < 8; i++) {
+            if (i >= 0) {
+                Image placeHolderImage = new Image(getClass().getResourceAsStream("img/placeholder.png"));
+                ImageView placeHolderImageView = new ImageView(placeHolderImage);
+                placeHolderImageView.setFitWidth(125);
+                placeHolderImageView.setFitHeight(125);
+                playerImages.add(placeHolderImageView);
+            }
+        }
+
+        //Add imageview to cards
+        for (int i = 0; i < playerImages.size() * 2; i++) {
+            Image placeHolderImage = new Image(getClass().getResourceAsStream("img/cards/800px-Playing_card_club_A.svg.png"));
+            ImageView placeHolderImageView = new ImageView(placeHolderImage);
+            placeHolderImageView.setFitHeight(80);
+            placeHolderImageView.setFitWidth(60);
+            cards.add(placeHolderImageView);
+        }
+
+        for (int i = 0; i < playerImages.size(); i++) {
+            Label playerName = new Label();
+            playerName.setWrapText(true);
+            playerName.setMaxHeight(80);
+            playerName.setMaxWidth(100);
+            playerNames.add(playerName);
+        }
+
+        setPlayerSeats();
+        setPlayerCards();
+        setPlayerNames();
         gameCanvas.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (!newValue.equals(oldValue)) {
-                    AnchorPane.setLeftAnchor(image, gameCanvas.getWidth() - 500);
-                    AnchorPane.setRightAnchor(image, gameCanvas.getWidth() - 100);
-                    System.out.println("" + gameCanvas.getWidth());
+                    setPlayerPos();
+                    setCardPos();
+                    setPlayerNamePos();
                 }
             }
         });
-        gameCanvas.heightProperty().addListener(new ChangeListener <Number>() {
+        gameCanvas.heightProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (!newValue.equals(oldValue)) {
-                    AnchorPane.setTopAnchor(image, gameCanvas.getHeight() - 500);
-                    System.out.println("Height " + gameCanvas.getHeight());
+                    setPlayerPos();
+                    setCardPos();
                 }
             }
         });
+    }
 
+    private void setPlayerNamePos() {
+        double posX;
+        double posY;
+        for (int i = 0; i < playerNames.size(); i++) {
+            posX = playerImages.get(i).getX();
+            posY = playerImages.get(i).getY();
+            playerNames.get(i).setVisible(i >= Main.client.total_players);
+        }
+    }
+
+    private void setPlayerNames() {
+        for (Label playerName : playerNames) {
+            try {
+                gameCanvas.getChildren().add(playerName);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+    }
+
+    private void setCardPos() {
+        double posX;
+        double posY;
+        int cardNumber = 0;
+        for (int i = 0; i < cards.size(); i++) {
+            try {
+                for (int j = 0; j < 2; j++) {
+                    posX = playerImages.get(i).getX();
+                    posY = playerImages.get(i).getY();
+                    if (j == 0) {
+                        cards.get(cardNumber).setVisible(cardNumber <= Main.client.total_players * 2);
+                        cards.get(cardNumber).setX(posX);
+                        cards.get(cardNumber).setY(posY - 80);
+                        cardNumber++;
+                    } else {
+                        cards.get(cardNumber).setVisible(cardNumber <= Main.client.total_players * 2);
+                        cards.get(cardNumber).setX(posX + 65);
+                        cards.get(cardNumber).setY(posY - 80);
+                        cardNumber++;
+                    }
+                    System.out.println("X: " + cards.get(i).getX() + ", Y: " + cards.get(i).getY());
+                }
+            } catch (Exception e) {
+                System.out.println("Stop");
+            }
+            System.out.println("Nummer:" + cardNumber);
+        }
+    }
+
+    private void setPlayerCards() {
+        for (ImageView cardImages : cards) {
+            try {
+                gameCanvas.getChildren().add(cardImages);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+    }
+
+    private void setPlayerSeats() {
+        for (ImageView playerImage : playerImages) {
+            try {
+                gameCanvas.getChildren().add(playerImage);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+
+        }
+    }
+
+    private void setPlayerPos() {
+        double centerX = (Main.pStage.getScene().getWidth() - 409) / 2;
+        double centerY = (Main.pStage.getScene().getHeight() - 277) / 2;
+        for (int i = 0; i < playerImages.size(); i++) {
+            ImageView placeHolderImageView = playerImages.get(i);
+            placeHolderImageView.toFront();
+            double angle = 2 * i * Math.PI / Main.client.total_players;
+            double offsetX = -Math.sin(angle) * centerX * 0.7;
+            double offsetY = Math.cos(angle) * centerY * 0.7;
+            double imageX = (centerX + offsetX) - 50;
+            double imageY = (centerY + offsetY) - 50;
+            placeHolderImageView.setX(imageX);
+            placeHolderImageView.setY(imageY);
+            if (i >= Main.client.total_players) {
+                placeHolderImageView.setVisible(false);
+            } else {
+                placeHolderImageView.setVisible(true);
+            }
+        }
     }
 
     private void initializeGameConfig() {
@@ -124,18 +249,18 @@ public class GameScreenController implements Initializable {
         bigBlindField.setPromptText("Enter big blind amount");
 
         //Add textfields and labels to grid
-        grid.add(new Label("Player Money:"),0,0);
-        grid.add(playerMoneyField,1,0);
-        grid.add(new Label("Small Blind:"),0,1);
-        grid.add(smallBlindField,1,1);
-        grid.add(new Label("Big Blind:"),0,2);
-        grid.add(bigBlindField,1,2);
+        grid.add(new Label("Player Money:"), 0, 0);
+        grid.add(playerMoneyField, 1, 0);
+        grid.add(new Label("Small Blind:"), 0, 1);
+        grid.add(smallBlindField, 1, 1);
+        grid.add(new Label("Big Blind:"), 0, 2);
+        grid.add(bigBlindField, 1, 2);
         Button sendServer = new Button("Send to server");
-        grid.add(sendServer,0,3);
+        grid.add(sendServer, 0, 3);
 
         //Add grid to scene and stage
         Group root = new Group(grid);
-        Scene scene = new Scene(root, 900,362);
+        Scene scene = new Scene(root, 900, 362);
         Stage gameConfig = new Stage();
         gameConfig.setTitle("Game configurations for -Poker For Humans-");
         gameConfig.setScene(scene);
@@ -147,7 +272,7 @@ public class GameScreenController implements Initializable {
 
         //Make on action for button
         sendServer.setOnAction(event -> {
-            try{
+            try {
                 playerMoney = Integer.parseInt(playerMoneyField.getText());
                 smallBlind = Integer.parseInt(smallBlindField.getText());
                 bigBlind = Integer.parseInt(bigBlindField.getText());
@@ -161,18 +286,14 @@ public class GameScreenController implements Initializable {
 
     }
 
-    private void addPlayerToTable(String playerName, Image playerImage) {
-
-    }
-
     public void handleCallButton(ActionEvent actionEvent) throws InterruptedException {
         raiseAmount = 0;
         checkZero(raiseAmount);
-        Main.client.sendAction("call",0);
+        Main.client.sendAction("call", 0);
     }
 
     public void handleRaiseButton(ActionEvent actionEvent) throws InterruptedException {
-        Main.client.sendAction("raise",raiseAmount);
+        Main.client.sendAction("raise", raiseAmount);
         raiseAmount = 0;
         checkZero(raiseAmount);
     }
@@ -180,7 +301,7 @@ public class GameScreenController implements Initializable {
     public void handleFoldButton(ActionEvent actionEvent) throws InterruptedException {
         raiseAmount = 0;
         checkZero(raiseAmount);
-        Main.client.sendAction("fold",0);
+        Main.client.sendAction("fold", 0);
     }
 
     public void handleSetZero(ActionEvent actionEvent) {
