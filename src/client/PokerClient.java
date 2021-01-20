@@ -34,6 +34,9 @@ public class PokerClient implements Runnable{
 
     public PokerClient(String gate,String table) throws IOException, InterruptedException {
         connectToServer(gate,table);
+        for(int i = 0; i < 8; i++){
+            players.add(new ClientPlayer());
+        }
     }
 
 
@@ -146,8 +149,8 @@ class ClientPlayer{
     boolean isSmallBlind;
     boolean isBigBlind;
 
-    ClientPlayer(String uid){
-        this.uid = uid;
+    ClientPlayer(){
+
     }
 }
 
