@@ -10,4 +10,9 @@ class ServerCard {
         suit = id / 13;
         rank = id % 13;
     }
+
+    @Override
+    public String toString() {
+        return "id=" + id;
+    }
 }
