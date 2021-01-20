@@ -16,6 +16,11 @@ public class PokerClient implements Runnable{
 
     ClientPlayer playerMe;
     ArrayList<ClientPlayer> players;
+    ArrayList<ClientCard> communityCards;
+    int playerMeId = 0;
+    int start_money = 0;
+    int requiredBet = 0;
+    int roundProgression = 0;
     public int total_players = 8;
     static String uid = UUID.randomUUID().toString();
     boolean isTurn = false;
@@ -64,6 +69,47 @@ public class PokerClient implements Runnable{
                 try {
                     Object[] tuple = ssGame.get(new ActualField(uid), new FormalField(String.class), new FormalField(String.class), new FormalField(Integer.class), new FormalField(Integer.class));
                     toPrint.add(tuple[5].toString());
+                    if(tuple[1].equals("your_index")){
+                        playerMeId = (int)tuple[3];
+                    }
+                    else if(tuple[1].equals("turn")){
+                        if ((int)tuple[3] == playerMeId){
+                            isTurn = true;
+                        }
+                    }
+                    else if(tuple[1].equals("player_count")){
+                        total_players = (int)tuple[3];
+                    }
+                    else if(tuple[1].equals("start_money")){
+                        start_money = (int)tuple[3];
+                    }
+                    else if(tuple[1].equals("raise")){
+                        players.get((int)tuple[4]).bank -= (int)tuple[3] - players.get((int)tuple[4]).bet;
+                        players.get((int)tuple[4]).bet = (int)tuple[3];
+                        requiredBet = (int)tuple[3];
+                    }
+                    else if(tuple[1].equals("allin")){
+                        players.get((int)tuple[4]).bank = 0;
+                        players.get((int)tuple[4]).bet += (int)tuple[3];
+                        if(requiredBet < (int)tuple[3]){
+                            requiredBet = (int)tuple[3];
+                        }
+                    }
+                    else if(tuple[1].equals("fold")){
+                        players.get((int)tuple[4]).state = 0;
+                    }
+                    else if(tuple[1].equals("community_card")){
+                        communityCards.add(new ClientCard((int)tuple[3]));
+                    }
+                    else if(tuple[1].equals("betting_round")){
+                        roundProgression = (int)tuple[3];
+                    }
+                    else if(tuple[1].equals("player_out")){
+                        players.get((int)tuple[3]).state = -1;
+                    }
+                    else if(tuple[1].equals("player_card")){
+                        players.get((int)tuple[4]).cards.add(new ClientCard((int)tuple[3]));
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
