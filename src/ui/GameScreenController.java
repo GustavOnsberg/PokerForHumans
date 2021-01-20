@@ -1,29 +1,18 @@
 package ui;
 
-import client.PokerClient;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import javafx.util.Pair;
-import org.jspace.SpaceRepository;
-import org.jspace.Tuple;
 import sample.Main;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,7 +23,7 @@ public class GameScreenController implements Initializable {
     public Button btnBack;
     public Label playerName;
     public HBox gameBtns;
-    public VBox chatWindow;
+    public ScrollPane serverWindow;
     public Pane moneyWindow;
     public Button btnCall;
     public Button btnRaise;
@@ -49,28 +38,34 @@ public class GameScreenController implements Initializable {
     public Button minusHundred;
     public Button minusThousand;
     public Button setZero;
-    public ScrollPane chatWindowPane;
     public AnchorPane gameCanvas;
     public int playerMoney;
     public int smallBlind;
     public int bigBlind;
+    public int whatTableCard = 0;
+    public Stage gameConfig;
+    public VBox textWindow = new VBox();
 
-    public ArrayList<ImageView> playerImages = new ArrayList<ImageView>();
-    public ArrayList<ImageView> cards = new ArrayList<ImageView>();
-    public ArrayList<Label> playerNames = new ArrayList<Label>();
+    public ArrayList<ImageView> playerImages = new ArrayList<>();
+    public ArrayList<ImageView> playerCards = new ArrayList<>();
+    public ArrayList<Label> playerNames = new ArrayList<>();
+    public ArrayList<ImageView> tableCards = new ArrayList<>();
 
 
     public void handleBackButton(ActionEvent actionEvent) throws IOException {
-        Main main = new Main();
-        main.setStage("/ui/StartScreen.fxml", Main.pStage);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to leave the game?");
+        alert.setTitle("Leave Game");
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get() == ButtonType.OK) {
+            Main main = new Main();
+            gameConfig.close();
+            main.setStage("/ui/StartScreen.fxml", Main.pStage);
+        }
     }
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeGameConfig();
-
-        playerName.setText(NameScreenController.getPlayerName());
         //Set style for main buttons
         btnCall.setId("game_btn");
         btnFold.setId("game_btn");
@@ -90,6 +85,55 @@ public class GameScreenController implements Initializable {
         //Set raise amount
         checkZero(raiseAmount);
 
+        //Setup table
+        addNodes();
+        setPlayerSeats();
+        setPlayerCards();
+        setPlayerNames();
+        setTableCards();
+
+        //Setup server window
+        textWindow.setSpacing(10);
+
+        AnchorPane.setTopAnchor(serverWindow, 0.0);
+        AnchorPane.setBottomAnchor(serverWindow, 0.0);
+        AnchorPane.setLeftAnchor(serverWindow, 0.0);
+
+        serverWindow("hej");
+
+        gameCanvas.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                if (!newValue.equals(oldValue)) {
+                    setPlayerPos();
+                    setCardPos();
+                    setPlayerNamePos();
+                    setTableCardPos();
+                }
+            }
+        });
+        gameCanvas.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                if (!newValue.equals(oldValue)) {
+                    setPlayerPos();
+                    setCardPos();
+                    setPlayerNamePos();
+                }
+            }
+        });
+    }
+
+    public void serverWindow(String serverMsg) {
+        Label text = new Label("--· " + serverMsg);
+        text.setLayoutX(20);
+        text.setId("server_window_label");
+        textWindow.getChildren().add(text);
+        serverWindow.setContent(textWindow);
+        serverWindow.setVvalue(1.0);
+    }
+
+    private void addNodes() {
         //Add imageview to players
         for (int i = 0; i < 8; i++) {
             if (i >= 0) {
@@ -101,47 +145,53 @@ public class GameScreenController implements Initializable {
             }
         }
 
-        //Add imageview to cards
+        //Add imageview to player cards
         for (int i = 0; i < playerImages.size() * 2; i++) {
             Image placeHolderImage = new Image(getClass().getResourceAsStream("img/cards/800px-Playing_card_club_A.svg.png"));
             ImageView placeHolderImageView = new ImageView(placeHolderImage);
             placeHolderImageView.setFitHeight(80);
             placeHolderImageView.setFitWidth(60);
-            cards.add(placeHolderImageView);
+            playerCards.add(placeHolderImageView);
+        }
+
+        //Add cards on table
+
+        for (int i = 0; i < 5; i++) {
+            Image placeHolderImage = new Image(getClass().getResourceAsStream("img/cards/800px-Playing_card_club_A.svg.png"));
+            ImageView placeHolderImageView = new ImageView(placeHolderImage);
+            placeHolderImageView.setFitHeight(120);
+            placeHolderImageView.setFitWidth(100);
+            tableCards.add(placeHolderImageView);
         }
 
         //Add player name labels
         for (int i = 0; i < playerImages.size(); i++) {
             Label playerName = new Label();
-            playerName.setWrapText(true);
-            playerName.setMaxHeight(80);
-            playerName.setMaxWidth(100);
+            playerName.setId("player_name_label");
             playerName.setText(NameScreenController.getPlayerName());
             playerNames.add(playerName);
         }
+    }
 
-        setPlayerSeats();
-        setPlayerCards();
-        setPlayerNames();
-        gameCanvas.widthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if (!newValue.equals(oldValue)) {
-                    setPlayerPos();
-                    setCardPos();
-                    setPlayerNamePos();
-                }
+    private void setTableCardPos() {
+        double centerX = ((Main.pStage.getScene().getWidth() - 409) / 2) - 150;
+        double centerY = ((Main.pStage.getScene().getHeight() - 277) / 2) - 50;
+        for (int i = 0; i < tableCards.size(); i++) {
+            tableCards.get(i).setX(centerX);
+            tableCards.get(i).setY(centerY);
+            centerX = centerX + 70;
+            tableCards.get(i).setVisible(false);
+        }
+    }
+
+    private void setTableCards() {
+        for (ImageView card : tableCards) {
+            try {
+                gameCanvas.getChildren().add(card);
+            } catch (Exception e) {
+                System.out.println(e);
             }
-        });
-        gameCanvas.heightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if (!newValue.equals(oldValue)) {
-                    setPlayerPos();
-                    setCardPos();
-                }
-            }
-        });
+        }
     }
 
     private void setPlayerNamePos() {
@@ -151,9 +201,15 @@ public class GameScreenController implements Initializable {
             posX = playerImages.get(i).getX();
             posY = playerImages.get(i).getY();
             playerNames.get(i).setVisible(i >= Main.client.total_players);
-            playerNames.get(i).setLayoutX(posX);
-            playerNames.get(i).setLayoutY(posY + 100);
+            playerNames.get(i).setLayoutX(posX + 150);
+            playerNames.get(i).setLayoutY(posY - 10);
+            playerNames.get(i).setText(NameScreenController.getPlayerName());
+            playerNames.get(i).setVisible(true);
 
+            //Debug label position
+//            System.out.println("X: " + playerNames.get(i).getLayoutX());
+//            System.out.println("Y: " + playerNames.get(i).getLayoutY());
+//            System.out.println("Name: " + playerNames.get(i).getText());
         }
     }
 
@@ -171,33 +227,31 @@ public class GameScreenController implements Initializable {
         double posX;
         double posY;
         int cardNumber = 0;
-        for (int i = 0; i < cards.size(); i++) {
+        for (int i = 0; i < playerCards.size(); i++) {
             try {
                 for (int j = 0; j < 2; j++) {
                     posX = playerImages.get(i).getX();
                     posY = playerImages.get(i).getY();
                     if (j == 0) {
-                        cards.get(cardNumber).setVisible(cardNumber <= Main.client.total_players * 2);
-                        cards.get(cardNumber).setX(posX);
-                        cards.get(cardNumber).setY(posY - 80);
+                        playerCards.get(cardNumber).setVisible(cardNumber <= Main.client.total_players * 2);
+                        playerCards.get(cardNumber).setX(posX);
+                        playerCards.get(cardNumber).setY(posY - 85);
                         cardNumber++;
                     } else {
-                        cards.get(cardNumber).setVisible(cardNumber <= Main.client.total_players * 2);
-                        cards.get(cardNumber).setX(posX + 65);
-                        cards.get(cardNumber).setY(posY - 80);
+                        playerCards.get(cardNumber).setVisible(cardNumber <= Main.client.total_players * 2);
+                        playerCards.get(cardNumber).setX(posX + 65);
+                        playerCards.get(cardNumber).setY(posY - 85);
                         cardNumber++;
                     }
-                    System.out.println("X: " + cards.get(i).getX() + ", Y: " + cards.get(i).getY());
                 }
-            } catch (Exception e) {
-                System.out.println("Stop");
+            } catch (Exception ignored) {
+
             }
-            System.out.println("Nummer:" + cardNumber);
         }
     }
 
     private void setPlayerCards() {
-        for (ImageView cardImages : cards) {
+        for (ImageView cardImages : playerCards) {
             try {
                 gameCanvas.getChildren().add(cardImages);
             } catch (Exception e) {
@@ -224,8 +278,8 @@ public class GameScreenController implements Initializable {
             ImageView placeHolderImageView = playerImages.get(i);
             placeHolderImageView.toFront();
             double angle = 2 * i * Math.PI / Main.client.total_players;
-            double offsetX = -Math.sin(angle) * centerX * 0.7;
-            double offsetY = Math.cos(angle) * centerY * 0.7;
+            double offsetX = -Math.sin(angle) * centerX * 0.6;
+            double offsetY = Math.cos(angle) * centerY * 0.6;
             double imageX = (centerX + offsetX) - 50;
             double imageY = (centerY + offsetY) - 50;
             placeHolderImageView.setX(imageX);
@@ -266,7 +320,7 @@ public class GameScreenController implements Initializable {
         //Add grid to scene and stage
         Group root = new Group(grid);
         Scene scene = new Scene(root, 900, 362);
-        Stage gameConfig = new Stage();
+        gameConfig = new Stage();
         gameConfig.setTitle("Game configurations for -Poker For Humans-");
         gameConfig.setScene(scene);
         root.getStylesheets().add(Main.cssBtn);
@@ -295,6 +349,10 @@ public class GameScreenController implements Initializable {
         raiseAmount = 0;
         checkZero(raiseAmount);
         Main.client.sendAction("call", 0);
+        try {
+        } catch (Exception ignored) {
+        }
+        serverWindow("Fuck");
     }
 
     public void handleRaiseButton(ActionEvent actionEvent) throws InterruptedException {
