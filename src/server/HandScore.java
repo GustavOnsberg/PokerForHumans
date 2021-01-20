@@ -119,6 +119,19 @@ public class HandScore {
         //four of a kind
         int fourOfAKind = -1;
         int oneOfAKind = -1;
+        int threeOfAKind = -1;
+        int twoOfAKind = -1;
+        if (cardAmount[0] != 0) {
+            if (cardAmount[0] > 3) {
+                fourOfAKind = 13;
+            } else if (cardAmount[0] > 2) {
+                threeOfAKind = 13;
+            } else if (cardAmount[0] > 1) {
+                twoOfAKind = 13;
+            } else {
+                oneOfAKind = 13;
+            }
+        }
         for (int i = 0; i < cardAmount.length; i++) {
             if (cardAmount[i] > 3) {
                 fourOfAKind = i;
@@ -131,13 +144,8 @@ public class HandScore {
         }
 
         //full house
-        int threeOfAKind = -1;
-        int twoOfAKind = -1;
-        if (cardAmount[0] > 2) {
-            threeOfAKind = 0;
-        } else if (cardAmount[0] > 1) {
-            twoOfAKind = 0;
-        }
+
+
         for (int i = cardAmount.length - 1; i > 0; i--) {
             if (cardAmount[i] > 2) {
                 if (threeOfAKind != -1) {
@@ -157,10 +165,20 @@ public class HandScore {
         if (suit != -1) {
             int[] highCardsFlush = new int[5];
             counter = 0;
+
+            if (cardAmount[0] != 0) {
+                for (int i = 0; i < cards.size(); i++) {
+                    if (cards.get(i).id - suit * 13 == 0) {
+                        highCardsFlush[counter] = 13;
+                        counter++;
+                        break;
+                    }
+                }
+            }
             for (int i = cards.size() - 1; i > 0; i--) {
                 if (cards.get(i).suit == suit) {
                     if (counter < 5) {
-                        highCardsFlush[counter] = cards.get(i).id;
+                        highCardsFlush[counter] = cards.get(i).rank;
                         counter++;
                     }
                 }
@@ -172,6 +190,8 @@ public class HandScore {
         //straight
         if (straight != -1) {
             return 5000000 + straight;
+        } else if (cardAmount[0] != 0 && cardAmount[12] != 0 && cardAmount[11] != 0 && cardAmount[10] != 0 && cardAmount[9] != 0) {
+            return 5999999;
         }
 
         //three of a kind
@@ -183,6 +203,9 @@ public class HandScore {
         int pair1 = -1;
         int pair2 = -1;
         int kicker = -1;
+        if(cardAmount[0]>1){
+            pair1 = 13;
+        }
         for (int i = cardAmount.length - 1; i > 0; i--) {
             if (pair1 == -1) {
                 if (cardAmount[i] > 1) {
@@ -216,6 +239,13 @@ public class HandScore {
         //high card
         int highcard = 0;
         counter = 4;
+        if(cardAmount[0]!=0){
+            for (int j = 0; j < cardAmount[0]; j++) {
+                highcard += 13 * Math.pow(13, counter);
+                System.out.println(13 * Math.pow(13, counter));
+                counter--;
+            }
+        }
         for (int i = cardAmount.length - 1; i > 0; i--) {
             if (counter >= 0) {
                 if (cardAmount[i] != 0) {
