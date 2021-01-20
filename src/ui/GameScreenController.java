@@ -83,7 +83,7 @@ public class GameScreenController implements Initializable {
         setZero.setId("raise_btn");
 
         //Set raise amount
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
 
         //Setup table
         addNodes();
@@ -99,7 +99,7 @@ public class GameScreenController implements Initializable {
         AnchorPane.setBottomAnchor(serverWindow, 0.0);
         AnchorPane.setLeftAnchor(serverWindow, 0.0);
 
-        serverWindow("hej");
+        sendServerMsgToWindow("hej");
 
         gameCanvas.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -124,7 +124,7 @@ public class GameScreenController implements Initializable {
         });
     }
 
-    public void serverWindow(String serverMsg) {
+    public void sendServerMsgToWindow(String serverMsg) {
         Label text = new Label("--· " + serverMsg);
         text.setLayoutX(20);
         text.setId("server_window_label");
@@ -347,49 +347,49 @@ public class GameScreenController implements Initializable {
 
     public void handleCallButton(ActionEvent actionEvent) throws InterruptedException {
         raiseAmount = 0;
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
         Main.client.sendAction("call", 0);
         try {
         } catch (Exception ignored) {
         }
-        serverWindow("Fuck");
+        sendServerMsgToWindow("Fuck");
     }
 
     public void handleRaiseButton(ActionEvent actionEvent) throws InterruptedException {
         Main.client.sendAction("raise", raiseAmount);
         raiseAmount = 0;
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
     }
 
     public void handleFoldButton(ActionEvent actionEvent) throws InterruptedException {
         raiseAmount = 0;
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
         Main.client.sendAction("fold", 0);
     }
 
     public void handleSetZero(ActionEvent actionEvent) {
         raiseAmount = 0;
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
     }
 
     public void handlePlusOne(ActionEvent actionEvent) {
         raiseAmount = raiseAmount + 1;
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
     }
 
     public void handlePlusTen(ActionEvent actionEvent) {
         raiseAmount = raiseAmount + 10;
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
     }
 
     public void handlePlusHundred(ActionEvent actionEvent) {
         raiseAmount = raiseAmount + 100;
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
     }
 
     public void handleplusThousand(ActionEvent actionEvent) {
         raiseAmount = raiseAmount + 1000;
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
     }
 
     public void handleMinusOne(ActionEvent actionEvent) {
@@ -398,7 +398,7 @@ public class GameScreenController implements Initializable {
         } else {
             raiseAmount = raiseAmount - 10;
         }
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
     }
 
     public void handleMinusTen(ActionEvent actionEvent) {
@@ -407,7 +407,7 @@ public class GameScreenController implements Initializable {
         } else {
             raiseAmount = raiseAmount - 10;
         }
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
     }
 
     public void handleMinusHundred(ActionEvent actionEvent) {
@@ -416,7 +416,7 @@ public class GameScreenController implements Initializable {
         } else {
             raiseAmount = raiseAmount - 100;
         }
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
     }
 
     public void handleMinusThousand(ActionEvent actionEvent) {
@@ -425,10 +425,10 @@ public class GameScreenController implements Initializable {
         } else {
             raiseAmount = raiseAmount - 1000;
         }
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
     }
 
-    public void checkZero(int raiseAmount) {
+    public void checkIfZero(int raiseAmount) {
         btnRaise.setText("Raise: " + raiseAmount);
         if (raiseAmount <= 0) {
             btnRaise.setId("raise_zero");
