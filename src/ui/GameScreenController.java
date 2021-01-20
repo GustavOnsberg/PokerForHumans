@@ -396,35 +396,23 @@ public class GameScreenController implements Initializable {
         if (raiseAmount - 1 <= 0) {
             raiseAmount = 0;
         } else {
-            raiseAmount = raiseAmount - 10;
+            raiseAmount = raiseAmount - 1;
         }
         checkIfZero(raiseAmount);
     }
 
     public void handleMinusTen(ActionEvent actionEvent) {
-        if (raiseAmount - 10 <= 0) {
-            raiseAmount = 0;
-        } else {
-            raiseAmount = raiseAmount - 10;
-        }
+        raiseAmount = Math.max(raiseAmount - 10, 0);
         checkIfZero(raiseAmount);
     }
 
     public void handleMinusHundred(ActionEvent actionEvent) {
-        if (raiseAmount - 100 <= 0) {
-            raiseAmount = 0;
-        } else {
-            raiseAmount = raiseAmount - 100;
-        }
+        raiseAmount = Math.max(raiseAmount - 100, 0);
         checkIfZero(raiseAmount);
     }
 
     public void handleMinusThousand(ActionEvent actionEvent) {
-        if (raiseAmount - 1000 <= 0) {
-            raiseAmount = 0;
-        } else {
-            raiseAmount = raiseAmount - 1000;
-        }
+        raiseAmount = Math.max(raiseAmount - 1000, 0);
         checkIfZero(raiseAmount);
     }
 
