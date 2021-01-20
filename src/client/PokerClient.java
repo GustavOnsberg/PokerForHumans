@@ -15,15 +15,15 @@ public class PokerClient implements Runnable{
     RemoteSpace ssGame;
 
     ClientPlayer playerMe;
-    ArrayList<ClientPlayer> players;
-    ArrayList<ClientCard> communityCards;
-    int playerMeId = 0;
-    int start_money = 0;
-    int requiredBet = 0;
-    int roundProgression = 0;
+    public ArrayList<ClientPlayer> players;
+    public ArrayList<ClientCard> communityCards;
+    public int playerMeId = 0;
+    public int start_money = 0;
+    public int requiredBet = 0;
+    public int roundProgression = 0;
     public int total_players = 8;
     static String uid = UUID.randomUUID().toString();
-    boolean isTurn = false;
+    public boolean isTurn = false;
     public ArrayList<String> toPrint = new ArrayList<>();
 
 
