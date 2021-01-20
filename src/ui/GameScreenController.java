@@ -393,11 +393,7 @@ public class GameScreenController implements Initializable {
     }
 
     public void handleMinusOne(ActionEvent actionEvent) {
-        if (raiseAmount - 1 <= 0) {
-            raiseAmount = 0;
-        } else {
-            raiseAmount = raiseAmount - 1;
-        }
+        raiseAmount = Math.max(raiseAmount - 1, 0);
         checkIfZero(raiseAmount);
     }
 
