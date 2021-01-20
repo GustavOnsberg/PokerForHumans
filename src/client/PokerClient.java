@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class PokerClient {
+public class PokerClient implements Runnable{
 
 
     RemoteSpace ssLobby;
@@ -18,6 +18,8 @@ public class PokerClient {
     ArrayList<ClientPlayer> players;
     public int total_players = 8;
     static String uid = UUID.randomUUID().toString();
+    boolean isTurn = false;
+    public ArrayList<String> toPrint = new ArrayList<>();
 
 
 
@@ -53,6 +55,20 @@ public class PokerClient {
     public void sendAction(String action, int value) throws InterruptedException {
         ssGame.put(action, uid, value);
         System.out.println("Client> Sending action: " + action + " " + value);
+    }
+
+    @Override
+    public void run() {
+        while (true){
+            if (!isTurn){
+                try {
+                    Object[] tuple = ssGame.get(new ActualField(uid), new FormalField(String.class), new FormalField(String.class), new FormalField(Integer.class), new FormalField(Integer.class));
+                    toPrint.add(tuple[5].toString());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
 
