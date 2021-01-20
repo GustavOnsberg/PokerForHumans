@@ -15,8 +15,8 @@ public class PokerClient implements Runnable{
     RemoteSpace ssGame;
 
     ClientPlayer playerMe;
-    public ArrayList<ClientPlayer> players;
-    public ArrayList<ClientCard> communityCards;
+    public ArrayList<ClientPlayer> players = new ArrayList<>();
+    public ArrayList<ClientCard> communityCards = new ArrayList<>();
     public int playerMeId = 0;
     public int start_money = 0;
     public int requiredBet = 0;
