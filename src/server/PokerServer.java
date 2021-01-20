@@ -344,7 +344,7 @@ class Waiter implements Runnable{
         if(i1 >= players.size()){
             return getNextPlayerHelper(0,i2);
         }
-        else if (i1 == i2 || players.get(i1).bet == requiredBet){
+        else if (i1 == i2 || (players.get(i1).bet == requiredBet && players.get(i1).state != 1)){
             return -1;
         }
         else if(players.get(i1).state == 1 || players.get(i1).state == 2) {
