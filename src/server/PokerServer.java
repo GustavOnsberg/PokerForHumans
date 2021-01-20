@@ -112,7 +112,11 @@ class Waiter implements Runnable{
                     turnNotDetermined = false;
                 }
                 else{
-                    goToNextBettingRound();
+                    try {
+                        goToNextBettingRound();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -139,32 +143,44 @@ class Waiter implements Runnable{
                         else if(tuple[0].equals("start_game")){
                             System.out.println("Waiter ("+table+")> Starting game");
                             gameIsInProgress = true;
-                            for(int i = 0; i < players.size(); i++){
-                                players.get(i).bank = startMoney;
-                                players.get(i).state = 1;
+                            for(ServerPlayer p : players){
+                                p.bank = startMoney;
+                                p.state = 1;
+                                broadcast("player_count","player_count",players.size(),players.size(),players.size()+ " players around the table");
+                                broadcast("start_money","start_money",startMoney,startMoney,"Start money is "+startMoney);
                             }
+
+
                             startNewRound();
+                            broadcast("turn","turn",turn,turn,"It's player "+turn+"'s turn");
                         }
                     }
                     else if(gameIsInProgress){
                         if(tuple[0].equals("fold") && tuple[1].equals(players.get(turn).uid)){
                             players.get(turn).state = 0;
+                            broadcast("fold","fold",turn,turn,"Player "+turn+" has folded");
                             turn = getNextPlayer();
                             System.out.println("Waiter ("+table+")> "+players.get(turn).name+" has folded");
+                            broadcast("turn","turn",turn,turn,"It's player "+turn+"'s turn");
                         }
                         else if(tuple[0].equals("call") && tuple[1].equals(players.get(turn).uid)){
                             if(players.get(turn).bank + players.get(turn).bet >= server.requiredBet){
                                 players.get(turn).bank -= server.requiredBet - players.get(turn).bet;
                                 players.get(turn).bet = server.requiredBet;
                                 players.get(turn).state = 2;
+                                broadcast("call","call",requiredBet,requiredBet,"Player "+turn+" has called "+requiredBet);
+                                turn = getNextPlayer();
                                 System.out.println("Waiter ("+table+")> "+players.get(turn).name+" has called "+requiredBet);
                             }
                             else{
                                 players.get(turn).bet += players.get(turn).bank;
                                 players.get(turn).bank = 0;
                                 players.get(turn).state = 3;
+                                broadcast("allin","allin",players.get(turn).bet,players.get(turn).bet,"Player "+turn+" is all in with "+players.get(turn).bet);
+                                turn = getNextPlayer();
                                 System.out.println("Waiter ("+table+")> "+players.get(turn).name+" is all in with "+players.get(turn).bet);
                             }
+                            broadcast("turn","turn",turn,turn,"It's player "+turn+"'s turn");
                         }
                         else if(tuple[0].equals("raise") && tuple[1].equals(players.get(turn).uid)){
                             if((int)tuple[2] + server.requiredBet <= players.get(turn).bet + players.get(turn).bank){
@@ -172,14 +188,19 @@ class Waiter implements Runnable{
                                 players.get(turn).bet = (int)tuple[2] + server.requiredBet;
                                 server.requiredBet += (int)tuple[2];
                                 players.get(turn).state = 2;
+                                broadcast("raise","raise",players.get(turn).bet,players.get(turn).bet,"Player "+turn+" has raised to "+players.get(turn).bet);
+                                turn = getNextPlayer();
                                 System.out.println("Waiter ("+table+")> "+players.get(turn).name+" has raised by "+(int)tuple[2]);
                             }
                             else{
                                 players.get(turn).bet += players.get(turn).bank;
                                 players.get(turn).bank = 0;
                                 players.get(turn).state = 3;
+                                broadcast("allin","allin",players.get(turn).bet,players.get(turn).bet,"Player "+turn+" is all in with "+players.get(turn).bet);
+                                turn = getNextPlayer();
                                 System.out.println("Waiter ("+table+")> "+players.get(turn).name+" is all in with "+players.get(turn).bet);
                             }
+                            broadcast("turn","turn",turn,turn,"It's player "+turn+"'s turn");
                         }
                     }
                 }
@@ -191,7 +212,7 @@ class Waiter implements Runnable{
 
 
 
-    void goToNextBettingRound(){
+    void goToNextBettingRound() throws InterruptedException {
         boolean dealerFound = false;
         for(ServerPlayer p : players){
             if(p.state == 2 || p.state == 4){
@@ -201,10 +222,11 @@ class Waiter implements Runnable{
         while(!dealerFound){
             if (players.get(turn).isDealer){
                 dealerFound = true;
-                players.get(turn).isDealer = false;
             }
             turn = getNextPlayer();
         }
+        players.get(turn).state = 4;
+        broadcast("turn","turn",turn,turn,"It's player "+turn+"'s turn");
 
         if(roundProgression == 0){
             communityCards.add(deck.get(0));
@@ -214,18 +236,20 @@ class Waiter implements Runnable{
             communityCards.add(deck.get(0));
             deck.remove(0);
             roundProgression++;
+            broadcast("betting_round","betting_round",roundProgression,roundProgression,"Now in betting round "+roundProgression);
         }
         else if(roundProgression <= 2){
             communityCards.add(deck.get(0));
             deck.remove(0);
             roundProgression++;
+            broadcast("betting_round","betting_round",roundProgression,roundProgression,"Now in betting round "+roundProgression);
         }
         else {
             roundProgression++;
             goToShowdown();
         }
     }
-    void goToShowdown(){
+    void goToShowdown() throws InterruptedException {
         int pot = 0;
         for(ServerPlayer p : players){
             pot += p.bet;
@@ -233,6 +257,10 @@ class Waiter implements Runnable{
         players.get(0).bank += pot;
         for(ServerPlayer p : players){
             p.bet = 0;
+            if(p.bank <= 0){
+                p.state = -1;
+                broadcast("player_out","player_out",players.indexOf(p),players.indexOf(p),"NPlayer "+players.indexOf(p)+" is out");
+            }
         }
         startNewRound();
     }
@@ -307,6 +335,12 @@ class Waiter implements Runnable{
         }
         else{
             return getNextPlayerHelper(i1 + 1, i2);
+        }
+    }
+
+    void broadcast(String str1, String str2,int i,int j, String print) throws InterruptedException {
+        for(ServerPlayer p : players){
+            serverRep.get(table).put(p.uid, str1, str2, i,j, print);
         }
     }
 }

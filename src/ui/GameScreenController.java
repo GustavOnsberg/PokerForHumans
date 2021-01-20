@@ -1,8 +1,11 @@
 package ui;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
@@ -12,12 +15,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import sample.Main;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class GameScreenController implements Initializable {
     public Button btnBack;
@@ -83,7 +85,7 @@ public class GameScreenController implements Initializable {
         setZero.setId("raise_btn");
 
         //Set raise amount
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
 
         //Setup table
         addNodes();
@@ -94,13 +96,20 @@ public class GameScreenController implements Initializable {
 
         //Setup server window
         textWindow.setSpacing(10);
-
+        serverWindow.setVvalue(1.0);
         AnchorPane.setTopAnchor(serverWindow, 0.0);
         AnchorPane.setBottomAnchor(serverWindow, 0.0);
         AnchorPane.setLeftAnchor(serverWindow, 0.0);
 
-        serverWindow("hej");
+        //Timer to run server msg every 1/10 of a second
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.seconds(0.1),
+                        event -> sendServerMsgToWindow()));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
 
+
+        //Setup listerners to width and height of window
         gameCanvas.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -124,13 +133,15 @@ public class GameScreenController implements Initializable {
         });
     }
 
-    public void serverWindow(String serverMsg) {
-        Label text = new Label("--· " + serverMsg);
-        text.setLayoutX(20);
-        text.setId("server_window_label");
-        textWindow.getChildren().add(text);
-        serverWindow.setContent(textWindow);
-        serverWindow.setVvalue(1.0);
+    public void sendServerMsgToWindow() {
+        if (Main.client.toPrint.size() != 0) {
+            Label text = new Label("--· " + Main.client.toPrint.get(0));
+            Main.client.toPrint.remove(0);
+            text.setLayoutX(20);
+            text.setId("server_window_label");
+            textWindow.getChildren().add(text);
+            serverWindow.setContent(textWindow);
+        }
     }
 
     private void addNodes() {
@@ -315,7 +326,9 @@ public class GameScreenController implements Initializable {
         grid.add(new Label("Big Blind:"), 0, 2);
         grid.add(bigBlindField, 1, 2);
         Button sendServer = new Button("Send to server");
-        grid.add(sendServer, 0, 3);
+        grid.add(sendServer, 1, 3);
+        Button startGame = new Button("Start Game");
+        grid.add(startGame,0,3);
 
         //Add grid to scene and stage
         Group root = new Group(grid);
@@ -347,88 +360,71 @@ public class GameScreenController implements Initializable {
 
     public void handleCallButton(ActionEvent actionEvent) throws InterruptedException {
         raiseAmount = 0;
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
         Main.client.sendAction("call", 0);
         try {
         } catch (Exception ignored) {
         }
-        serverWindow("Fuck");
     }
 
     public void handleRaiseButton(ActionEvent actionEvent) throws InterruptedException {
         Main.client.sendAction("raise", raiseAmount);
         raiseAmount = 0;
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
     }
 
     public void handleFoldButton(ActionEvent actionEvent) throws InterruptedException {
         raiseAmount = 0;
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
         Main.client.sendAction("fold", 0);
     }
 
     public void handleSetZero(ActionEvent actionEvent) {
         raiseAmount = 0;
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
     }
 
     public void handlePlusOne(ActionEvent actionEvent) {
         raiseAmount = raiseAmount + 1;
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
     }
 
     public void handlePlusTen(ActionEvent actionEvent) {
         raiseAmount = raiseAmount + 10;
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
     }
 
     public void handlePlusHundred(ActionEvent actionEvent) {
         raiseAmount = raiseAmount + 100;
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
     }
 
     public void handleplusThousand(ActionEvent actionEvent) {
         raiseAmount = raiseAmount + 1000;
-        checkZero(raiseAmount);
+        checkIfZero(raiseAmount);
     }
 
     public void handleMinusOne(ActionEvent actionEvent) {
-        if (raiseAmount - 1 <= 0) {
-            raiseAmount = 0;
-        } else {
-            raiseAmount = raiseAmount - 10;
-        }
-        checkZero(raiseAmount);
+        raiseAmount = Math.max(raiseAmount - 1, 0);
+        checkIfZero(raiseAmount);
     }
 
     public void handleMinusTen(ActionEvent actionEvent) {
-        if (raiseAmount - 10 <= 0) {
-            raiseAmount = 0;
-        } else {
-            raiseAmount = raiseAmount - 10;
-        }
-        checkZero(raiseAmount);
+        raiseAmount = Math.max(raiseAmount - 10, 0);
+        checkIfZero(raiseAmount);
     }
 
     public void handleMinusHundred(ActionEvent actionEvent) {
-        if (raiseAmount - 100 <= 0) {
-            raiseAmount = 0;
-        } else {
-            raiseAmount = raiseAmount - 100;
-        }
-        checkZero(raiseAmount);
+        raiseAmount = Math.max(raiseAmount - 100, 0);
+        checkIfZero(raiseAmount);
     }
 
     public void handleMinusThousand(ActionEvent actionEvent) {
-        if (raiseAmount - 1000 <= 0) {
-            raiseAmount = 0;
-        } else {
-            raiseAmount = raiseAmount - 1000;
-        }
-        checkZero(raiseAmount);
+        raiseAmount = Math.max(raiseAmount - 1000, 0);
+        checkIfZero(raiseAmount);
     }
 
-    public void checkZero(int raiseAmount) {
+    public void checkIfZero(int raiseAmount) {
         btnRaise.setText("Raise: " + raiseAmount);
         if (raiseAmount <= 0) {
             btnRaise.setId("raise_zero");
