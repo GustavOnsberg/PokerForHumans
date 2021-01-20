@@ -108,6 +108,7 @@ class Waiter implements Runnable{
                     turn = getNextPlayer();
                 }
                 if(turn != -1){
+                    players.get(turn).state = 4;
                     turnNotDetermined = false;
                 }
                 else{
@@ -124,15 +125,15 @@ class Waiter implements Runnable{
                 else{
                     if (!gameIsInProgress && tuple[1].equals(players.get(0).uid)){
                         if(tuple[0].equals("set_start_money")){
-                            startMoney = (int)tuple[3];
+                            startMoney = (int)tuple[2];
                             System.out.println("Waiter ("+table+")> Start money set to "+startMoney);
                         }
                         else if(tuple[0].equals("set_small_blind")){
-                            smallBlind = (int)tuple[3];
+                            smallBlind = (int)tuple[2];
                             System.out.println("Waiter ("+table+")> Small blind set to "+smallBlind);
                         }
                         else if(tuple[0].equals("set_big_blind")){
-                            bigBlind = (int)tuple[3];
+                            bigBlind = (int)tuple[2];
                             System.out.println("Waiter ("+table+")> Big blind set to "+bigBlind);
                         }
                         else if(tuple[0].equals("start_game")){
@@ -143,11 +144,6 @@ class Waiter implements Runnable{
                                 players.get(i).state = 1;
                             }
                             startNewRound();
-
-                            communityCards.clear();
-                            for (int i = 0; i < 52; i++){
-                                deck.add(new ServerCard(i));
-                            }
                         }
                     }
                     else if(gameIsInProgress){
@@ -197,6 +193,11 @@ class Waiter implements Runnable{
 
     void goToNextBettingRound(){
         boolean dealerFound = false;
+        for(ServerPlayer p : players){
+            if(p.state == 2 || p.state == 4){
+                p.state = 1;
+            }
+        }
         while(!dealerFound){
             if (players.get(turn).isDealer){
                 dealerFound = true;
@@ -225,16 +226,15 @@ class Waiter implements Runnable{
         }
     }
     void goToShowdown(){
-        while(pot > 0){
-            ArrayList<ServerPlayer> winners = new ArrayList<>();
-            winners.add(players.get(1));
-            winners.get(0).bank += pot;
-            pot = 0;
-            for (int i = 0; i < players.size(); i++){
-                players.get(i).bet = 0;
-            }
+        int pot = 0;
+        for(ServerPlayer p : players){
+            pot += p.bet;
         }
-
+        players.get(0).bank += pot;
+        for(ServerPlayer p : players){
+            p.bet = 0;
+        }
+        startNewRound();
     }
     void startNewRound(){
         boolean dealerFound = false;
@@ -248,13 +248,30 @@ class Waiter implements Runnable{
         players.get(turn).isDealer = true;
         turn = getNextPlayer();
         players.get(turn).isSmallBlind = true;
+        if(players.get(turn).bank >= smallBlind){
+            players.get(turn).bet = smallBlind;
+            players.get(turn).bank -= smallBlind;
+        }
+        else{
+            players.get(turn).bet = players.get(turn).bank;
+            players.get(turn).bank = 0;
+        }
         turn = getNextPlayer();
         players.get(turn).isBigBlind = true;
+        if(players.get(turn).bank >= bigBlind){
+            players.get(turn).bet = bigBlind;
+            players.get(turn).bank -= bigBlind;
+        }
+        else{
+            players.get(turn).bet = players.get(turn).bank;
+            players.get(turn).bank = 0;
+        }
         turn = getNextPlayer();
         players.get(turn).state = 4;
+        requiredBet = bigBlind;
 
         ArrayList<ServerCard> allCards = new ArrayList<>();
-
+        deck.clear();
         communityCards.clear();
         for (int i = 0; i < 52; i++){
             allCards.add(new ServerCard(i));
@@ -267,7 +284,7 @@ class Waiter implements Runnable{
         }
         for (int i = 0; i < players.size(); i++){
             players.get(i).cards.clear();
-            if(players.get(i).state == 2){
+            if(players.get(i).state != -1){
                 players.get(i).cards.add(deck.get(0));
                 deck.remove(0);
                 players.get(i).cards.add(deck.get(0));

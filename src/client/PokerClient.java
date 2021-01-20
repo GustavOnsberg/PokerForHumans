@@ -51,7 +51,7 @@ public class PokerClient {
 
 
     public void sendAction(String action, int value) throws InterruptedException {
-        ssGame.put(action, value);
+        ssGame.put(action, uid, value);
         System.out.println("Client> Sending action: " + action + " " + value);
     }
 }
