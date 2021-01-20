@@ -341,11 +341,11 @@ class Waiter implements Runnable{
         return getNextPlayerHelper(turn + 1, turn);
     }
     int getNextPlayerHelper(int i1, int i2){
-        if (i1 == i2 || players.get(i1).bet == requiredBet){
-            return -1;
-        }
-        else if(i1 >= players.size()){
+        if(i1 >= players.size()){
             return getNextPlayerHelper(0,i2);
+        }
+        else if (i1 == i2 || players.get(i1).bet == requiredBet){
+            return -1;
         }
         else if(players.get(i1).state == 1 || players.get(i1).state == 2) {
             return i1;
