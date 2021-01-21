@@ -265,10 +265,27 @@ class Waiter implements Runnable{
         int pot = 0;
         for(ServerPlayer p : players){
             pot += p.bet;
+            p.bet = 0;
         }
+
+        int highScore = 0;
+        int highScorPlayer = 0;
+
         players.get(0).bank += pot;
         for(ServerPlayer p : players){
-            p.bet = 0;
+            ArrayList<ServerCard> sevenHand = new ArrayList<>();
+            for(ServerCard cc : communityCards){
+                sevenHand.add(cc);
+            }
+            sevenHand.add(p.cards.get(0));
+            sevenHand.add(p.cards.get(1));
+
+            if (HandScore.handScore(sevenHand) > highScore){
+                highScore = HandScore.handScore(sevenHand);
+                highScorPlayer = players.indexOf(p);
+            }
+            players.get(highScorPlayer).bank+=pot;
+            pot = 0;
             if(p.bank <= 0){
                 p.state = -1;
                 broadcast("player_out","player_out",players.indexOf(p),players.indexOf(p),"NPlayer "+players.indexOf(p)+" is out");

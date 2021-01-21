@@ -89,6 +89,13 @@ public class PokerClient implements Runnable{
                     }
                     else if(tuple[1].equals("start_money")){
                         start_money = (int)tuple[3];
+                        for(ClientPlayer p : players){
+                            p.bank = start_money;
+                        }
+                    }
+                    else if(tuple[1].equals("call")){
+                        players.get((int)tuple[4]).bank -= (int)tuple[3] - players.get((int)tuple[4]).bet;
+                        players.get((int)tuple[4]).bet = (int)tuple[3];
                     }
                     else if(tuple[1].equals("raise")){
                         players.get((int)tuple[4]).bank -= (int)tuple[3] - players.get((int)tuple[4]).bet;
