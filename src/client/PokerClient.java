@@ -125,17 +125,5 @@ public class PokerClient implements Runnable{
 }
 
 
-class ClientCard{
-    int id;
-    int suit;
-    int rank;
-    public ClientCard(int id){
-        this.id = id;
-        suit = id % 4;
-        rank = id % 13;
-    }
-}
-
-
 
 
