@@ -38,6 +38,7 @@ public class PokerClient implements Runnable{
         for(int i = 0; i < 8; i++){
             players.add(new ClientPlayer());
         }
+        new Thread(this).start();
     }
 
 
