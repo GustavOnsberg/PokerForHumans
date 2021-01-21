@@ -38,7 +38,6 @@ public class PokerClient implements Runnable{
         for(int i = 0; i < 8; i++){
             players.add(new ClientPlayer());
         }
-        new Thread(this).start();
     }
 
 
@@ -59,6 +58,7 @@ public class PokerClient implements Runnable{
         ssGame = new RemoteSpace("tcp://"+gate+"/"+table+"?keep");
         System.out.println("Client> Now at table "+table);
         ssGame.put("req",uid,0);
+        new Thread(this).start();
     }
 
 
