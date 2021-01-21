@@ -17,7 +17,7 @@ public class PokerClient implements Runnable{
     ClientPlayer playerMe;
     public ArrayList<ClientPlayer> players = new ArrayList<>();
     public ArrayList<ClientCard> communityCards = new ArrayList<>();
-    public int playerMeId = 0;
+    public int playerMeId = 3;
     public int start_money = 0;
     public int requiredBet = 0;
     public int roundProgression = 0;
@@ -25,6 +25,7 @@ public class PokerClient implements Runnable{
     static String uid = UUID.randomUUID().toString();
     public boolean isTurn = false;
     public ArrayList<String> toPrint = new ArrayList<>();
+    public boolean gameIsInProgress = false;
 
 
 
@@ -71,9 +72,11 @@ public class PokerClient implements Runnable{
             if (!isTurn){
                 try {
                     Object[] tuple = ssGame.get(new ActualField(uid), new FormalField(String.class), new FormalField(String.class), new FormalField(Integer.class), new FormalField(Integer.class));
+                    System.out.println("Client> Received: " + tuple[1].toString() + " : " + tuple[2].toString() + " : " + (int)tuple[3] + " : " + (int)tuple[4]);
                     toPrint.add(tuple[5].toString());
                     if(tuple[1].equals("your_index")){
                         playerMeId = (int)tuple[3];
+                        gameIsInProgress = true;
                     }
                     else if(tuple[1].equals("turn")){
                         if ((int)tuple[3] == playerMeId){
@@ -126,9 +129,9 @@ class ClientPlayer{
     String uid;
     String name;
 
-    int bank;
+    public int bank;
     ArrayList<ClientCard> cards = new ArrayList<>();
-    int bet;
+    public int bet;
 
     int score;
 
@@ -152,13 +155,22 @@ class ClientPlayer{
     ClientPlayer(){
 
     }
+
+    public int getBank() {
+        return bank;
+    }
+
+    public int getState() {
+        return state;
+    }
+
 }
 
 class ClientCard{
     int id;
     int suit;
     int rank;
-    ClientCard(int id){
+    public ClientCard(int id){
         this.id = id;
         suit = id % 4;
         rank = id % 13;

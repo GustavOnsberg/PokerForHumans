@@ -1,5 +1,7 @@
 package ui;
 
+
+import client.PokerClient;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
@@ -14,6 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import sample.Main;
@@ -44,7 +47,6 @@ public class GameScreenController implements Initializable {
     public int playerMoney;
     public int smallBlind;
     public int bigBlind;
-    public int whatTableCard = 0;
     public Stage gameConfig;
     public VBox textWindow = new VBox();
 
@@ -52,6 +54,8 @@ public class GameScreenController implements Initializable {
     public ArrayList<ImageView> playerCards = new ArrayList<>();
     public ArrayList<Label> playerNames = new ArrayList<>();
     public ArrayList<ImageView> tableCards = new ArrayList<>();
+    public Label playerMoneyLabel;
+    public Label betLabel;
 
 
     public void handleBackButton(ActionEvent actionEvent) throws IOException {
@@ -67,7 +71,10 @@ public class GameScreenController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initializeGameConfig();
+        if(NameScreenController.getTableID().isEmpty()) {
+            initializeGameConfig();
+        }
+
         //Set style for main buttons
         btnCall.setId("game_btn");
         btnFold.setId("game_btn");
@@ -101,10 +108,14 @@ public class GameScreenController implements Initializable {
         AnchorPane.setBottomAnchor(serverWindow, 0.0);
         AnchorPane.setLeftAnchor(serverWindow, 0.0);
 
-        //Timer to run server msg every 1/10 of a second
+        //Timer to run server msg and position update methods every 1/10 of a second
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.seconds(0.1),
-                        event -> sendServerMsgToWindow()));
+                        event -> {
+                            sendServerMsgToWindow();
+                            setPlayerNamePos();
+                            setCardPos();
+                        }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
@@ -166,7 +177,6 @@ public class GameScreenController implements Initializable {
         }
 
         //Add cards on table
-
         for (int i = 0; i < 5; i++) {
             Image placeHolderImage = new Image(getClass().getResourceAsStream("img/cards/800px-Playing_card_club_A.svg.png"));
             ImageView placeHolderImageView = new ImageView(placeHolderImage);
@@ -193,6 +203,10 @@ public class GameScreenController implements Initializable {
             centerX = centerX + 70;
             tableCards.get(i).setVisible(false);
         }
+        for (int i = 0; i < Main.client.communityCards.size(); i++) {
+            tableCards.get(i).setVisible(true);
+        }
+
     }
 
     private void setTableCards() {
@@ -215,7 +229,6 @@ public class GameScreenController implements Initializable {
             playerNames.get(i).setLayoutX(posX + 150);
             playerNames.get(i).setLayoutY(posY - 10);
             playerNames.get(i).setText(NameScreenController.getPlayerName());
-            playerNames.get(i).setVisible(true);
 
             //Debug label position
 //            System.out.println("X: " + playerNames.get(i).getLayoutX());
@@ -238,22 +251,19 @@ public class GameScreenController implements Initializable {
         double posX;
         double posY;
         int cardNumber = 0;
-        for (int i = 0; i < playerCards.size(); i++) {
+        for (int i = 0; i < playerImages.size(); i++) {
             try {
                 for (int j = 0; j < 2; j++) {
                     posX = playerImages.get(i).getX();
                     posY = playerImages.get(i).getY();
+                    playerCards.get(cardNumber).setVisible(cardNumber <= Main.client.total_players * 2 && Main.client.playerMeId == i || Main.client.roundProgression == 4);
                     if (j == 0) {
-                        playerCards.get(cardNumber).setVisible(cardNumber <= Main.client.total_players * 2);
                         playerCards.get(cardNumber).setX(posX);
-                        playerCards.get(cardNumber).setY(posY - 85);
-                        cardNumber++;
                     } else {
-                        playerCards.get(cardNumber).setVisible(cardNumber <= Main.client.total_players * 2);
                         playerCards.get(cardNumber).setX(posX + 65);
-                        playerCards.get(cardNumber).setY(posY - 85);
-                        cardNumber++;
                     }
+                    playerCards.get(cardNumber).setY(posY - 85);
+                    cardNumber++;
                 }
             } catch (Exception ignored) {
 
@@ -295,11 +305,7 @@ public class GameScreenController implements Initializable {
             double imageY = (centerY + offsetY) - 50;
             placeHolderImageView.setX(imageX);
             placeHolderImageView.setY(imageY);
-            if (i >= Main.client.total_players) {
-                placeHolderImageView.setVisible(false);
-            } else {
-                placeHolderImageView.setVisible(true);
-            }
+            placeHolderImageView.setVisible(i < Main.client.total_players);
         }
     }
 
@@ -326,9 +332,7 @@ public class GameScreenController implements Initializable {
         grid.add(new Label("Big Blind:"), 0, 2);
         grid.add(bigBlindField, 1, 2);
         Button sendServer = new Button("Send to server");
-        grid.add(sendServer, 1, 3);
-        Button startGame = new Button("Start Game");
-        grid.add(startGame,0,3);
+        grid.add(sendServer, 0, 3);
 
         //Add grid to scene and stage
         Group root = new Group(grid);
@@ -342,29 +346,35 @@ public class GameScreenController implements Initializable {
         grid.setStyle("-fx-background-color:  #345599");
         gameConfig.setResizable(false);
 
-        //Make on action for button
+        //Make on action for buttons
         sendServer.setOnAction(event -> {
             try {
                 playerMoney = Integer.parseInt(playerMoneyField.getText());
                 smallBlind = Integer.parseInt(smallBlindField.getText());
                 bigBlind = Integer.parseInt(bigBlindField.getText());
+                Main.client.sendAction("set_start_money",playerMoney);
+                Main.client.sendAction("set_small_blind",smallBlind);
+                Main.client.sendAction("set_big_blind",bigBlind);
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Do you want to start the game?");
+                Optional<ButtonType> result = alert.showAndWait();
+                if(result.get() == ButtonType.OK) {
+                    Main.client.sendAction("start_game",0);
+                    gameConfig.close();
+                }
             } catch (Exception e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter numbers");
                 alert.show();
             }
         });
-
+//        gameConfig.setAlwaysOnTop(true);
         gameConfig.show();
-
     }
 
     public void handleCallButton(ActionEvent actionEvent) throws InterruptedException {
         raiseAmount = 0;
         checkIfZero(raiseAmount);
         Main.client.sendAction("call", 0);
-        try {
-        } catch (Exception ignored) {
-        }
+        setMoneyLabels();
     }
 
     public void handleRaiseButton(ActionEvent actionEvent) throws InterruptedException {
@@ -433,15 +443,7 @@ public class GameScreenController implements Initializable {
         }
     }
 
-    public int getPlayerMoney() {
-        return playerMoney;
-    }
-
-    public int getSmallBlind() {
-        return smallBlind;
-    }
-
-    public int getBigBlind() {
-        return bigBlind;
+    private void setMoneyLabels() {
+        playerMoneyLabel.setText("Your Money: " + Main.client.players.get(Main.client.playerMeId));
     }
 }

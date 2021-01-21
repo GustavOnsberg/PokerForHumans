@@ -8,20 +8,24 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import sample.Main;
 
+import java.io.IOException;
+
 public class NameScreenController {
     public TextField playerNameField;
     public Button confirmName;
     public Label errorMsg1;
     public int count = 0;
     public static String playerName;
+    public static String tableID;
     public TextField serverIPField;
     public Label errorMsg2;
     public TextField tableIDField;
     public Label errorMsg3;
 
-    public void handleConfirmNameButton(ActionEvent actionEvent) {
-        //Get name
+    public void handleConfirmNameButton(ActionEvent actionEvent) throws IOException, InterruptedException {
+        //Get info
         playerName = playerNameField.getText();
+        tableID = tableIDField.getText();
         confirmName.setDefaultButton(true);
 
         if (playerNameField.getText().length() > 40 || playerNameField.getText().isEmpty()) {
@@ -34,7 +38,7 @@ public class NameScreenController {
         } else {
             Main main = new Main();
             try {
-                main.client = new PokerClient(serverIPField.getText(), tableIDField.getText());
+                Main.client = new PokerClient(serverIPField.getText(), tableIDField.getText());
                 main.setStage("/ui/GameScreen.fxml", Main.pStage);
             } catch (Exception InterruptedException) {
                 errorMsg2.setText("This IP is not valid");
@@ -68,5 +72,9 @@ public class NameScreenController {
 
     public static String getPlayerName() {
         return playerName;
+    }
+
+    public static String getTableID() {
+        return tableID;
     }
 }
