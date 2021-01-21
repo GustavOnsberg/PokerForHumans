@@ -72,7 +72,7 @@ public class PokerClient implements Runnable{
         while (true){
             if (!isTurn){
                 try {
-                    Object[] tuple = ssGame.get(new ActualField(uid), new FormalField(String.class), new FormalField(String.class), new FormalField(Integer.class), new FormalField(Integer.class));
+                    Object[] tuple = ssGame.get(new ActualField(uid), new FormalField(String.class), new FormalField(String.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(String.class));
                     System.out.println("Client> Received: " + tuple[1].toString() + " : " + tuple[2].toString() + " : " + (int)tuple[3] + " : " + (int)tuple[4]);
                     toPrint.add(tuple[5].toString());
                     if(tuple[1].equals("your_index")){
