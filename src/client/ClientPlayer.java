@@ -7,7 +7,7 @@ public class ClientPlayer {
     String name;
 
     public int bank;
-    ArrayList<ClientCard> cards = new ArrayList<>();
+    public ArrayList<ClientCard> cards = new ArrayList<>();
     public int bet;
 
     int score;
