@@ -222,6 +222,13 @@ class Waiter implements Runnable{
                 p.state = 1;
             }
         }
+        int beforeDealerId = 0;
+        for(int i = 0; i < players.size(); i++){
+            if (players.get(i).isDealer){
+                beforeDealerId = i;
+            }
+        }
+        turn = beforeDealerId;
         while(!dealerFound){
             if (players.get(turn).isDealer){
                 dealerFound = true;
