@@ -58,6 +58,7 @@ public class PokerClient implements Runnable{
         ssGame = new RemoteSpace("tcp://"+gate+"/"+table+"?keep");
         System.out.println("Client> Now at table "+table);
         ssGame.put("req",uid,0);
+        ssGame.get(new ActualField("resp"), new ActualField(uid));
         new Thread(this).start();
     }
 

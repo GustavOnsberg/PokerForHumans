@@ -49,8 +49,8 @@ class Butler implements Runnable{
                     server.lastServerId++;
                     serverRep.add("t_"+server.lastServerId,new SequentialSpace());
                     System.out.println("Butler> Created new tabel: t_"+server.lastServerId);
-                    serverRep.get("lobby").put("resp","t_"+server.lastServerId,tuple[1]);
                     new Thread(new Waiter(serverRep,server,"t_"+server.lastServerId)).start();
+                    serverRep.get("lobby").put("resp","t_"+server.lastServerId,tuple[1]);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -121,6 +121,7 @@ class Waiter implements Runnable{
                 System.out.println("Waiter ("+table+")> Reading: "+tuple[0].toString()+" : "+tuple[1].toString() + " : "+(int)tuple[2]);
                 if(tuple[0].equals("req") && !gameIsInProgress){
                     players.add(new ServerPlayer(tuple[1].toString()));
+                    serverRep.get(table).put("resp",tuple[1].toString());
                     System.out.println("Waiter ("+table+")> New player has joined: "+tuple[1].toString());
                 }
                 else{
