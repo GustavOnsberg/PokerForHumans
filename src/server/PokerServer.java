@@ -172,7 +172,7 @@ class Waiter implements Runnable{
                                 players.get(turn).bet = requiredBet;
                                 players.get(turn).state = 2;
                                 broadcast("call","call",requiredBet,turn,"Player "+turn+" has called "+requiredBet);
-                                System.out.println("Waiter ("+table+")> "+players.get(turn).name+" has called "+requiredBet);
+                                System.out.println("Waiter ("+table+")> Player "+turn+" has called "+requiredBet);
                                 turn = getNextPlayer();
                             }
                             else{
@@ -180,7 +180,7 @@ class Waiter implements Runnable{
                                 players.get(turn).bank = 0;
                                 players.get(turn).state = 3;
                                 broadcast("allin","allin",players.get(turn).bet,turn,"Player "+turn+" is all in with "+players.get(turn).bet);
-                                System.out.println("Waiter ("+table+")> "+players.get(turn).name+" is all in with "+players.get(turn).bet);
+                                System.out.println("Waiter ("+table+")> Player "+turn+" is all in with "+players.get(turn).bet);
                                 turn = getNextPlayer();
                             }
                             broadcast("turn","turn",turn,turn,"It's player "+turn+"'s turn");
@@ -192,7 +192,7 @@ class Waiter implements Runnable{
                                 requiredBet += (int)tuple[2];
                                 players.get(turn).state = 2;
                                 broadcast("raise","raise",players.get(turn).bet,turn,"Player "+turn+" has raised to "+players.get(turn).bet);
-                                System.out.println("Waiter ("+table+")> "+players.get(turn).name+" has raised by "+(int)tuple[2]);
+                                System.out.println("Waiter ("+table+")> Player "+turn+" has raised by "+(int)tuple[2]);
                                 turn = getNextPlayer();
                             }
                             else{
@@ -200,7 +200,7 @@ class Waiter implements Runnable{
                                 players.get(turn).bank = 0;
                                 players.get(turn).state = 3;
                                 broadcast("allin","allin",players.get(turn).bet,turn,"Player "+turn+" is all in with "+players.get(turn).bet);
-                                System.out.println("Waiter ("+table+")> "+players.get(turn).name+" is all in with "+players.get(turn).bet);
+                                System.out.println("Waiter ("+table+")> Player "+turn+" is all in with "+players.get(turn).bet);
                                 turn = getNextPlayer();
                             }
                             broadcast("turn","turn",turn,turn,"It's player "+turn+"'s turn");

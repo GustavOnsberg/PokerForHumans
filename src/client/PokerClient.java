@@ -73,6 +73,7 @@ public class PokerClient implements Runnable{
         while (true){
             if (!isTurn){
                 try {
+                    System.out.println("Client> Waiting for server");
                     Object[] tuple = ssGame.get(new ActualField(uid), new FormalField(String.class), new FormalField(String.class), new FormalField(Integer.class), new FormalField(Integer.class), new FormalField(String.class));
                     System.out.println("Client> Received: " + tuple[1].toString() + " : " + tuple[2].toString() + " : " + (int)tuple[3] + " : " + (int)tuple[4]);
                     toPrint.add(tuple[5].toString());
